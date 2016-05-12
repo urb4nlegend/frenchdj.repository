@@ -12,10 +12,10 @@
 	
   <extension point="xbmc.addon.metadata">
     <summary lang="en">jami</summary>
-    <description lang="en">Canais de Animação em Português. Toda a fonte do conteúdo é do Youtube.
-Playlists dedicadas aos mais pequenos com muita animação recente, animação clássica e musicais.
+    <description lang="en">Canais Infantis em PT e BR. Toda a fonte vem do Youtube.
+Playlists dedicadas aos mais pequenos com muita desenhos animados recentes, classicos e musicais.
 Nota Importante: 
-É aconselhado a última versão do youtube 5.20.0.6 e respetivo Login.</description>
+Aconselhado a ultima versao do youtube 5.20.0.6 e respetivo Login.</description>
     <platform>all</platform>
     <forum></forum>
     <website></website>
