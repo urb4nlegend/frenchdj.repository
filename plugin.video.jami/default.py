@@ -85,7 +85,6 @@ def main_list(params):
 	plugintools.add_item(title = "Dartacão [PT]", url = base + "playlist/PLrH5HKiu5jUe8ZF8jwdtprpucMVEjRON5/", thumbnail = icon24, fanart = fan01, folder = True)
 	plugintools.add_item(title = "Era uma vez - 4 Temporadas [PT]", url = base + "playlist/PLsWbExGo1KPZRlqvLY2Ja_SAJZMgBcdxD/", thumbnail = icon25, fanart = fan01, folder = True)
 	plugintools.add_item(title = "Contos Infantis [PT]", url = base + "channel/UCOre4lsfRMaC62bOHUjPp2Q/", thumbnail = icon26, fanart = fan01, folder = True)
-	plugintools.add_item(title = "Fim da Lista", thumbnail = icon, fanart = fan01, folder = True)
 	xbmcplugin.setContent(int(sys.argv[1]), 'movies')
 	xbmc.executebuiltin('Container.SetViewMode(500)')
 	
