@@ -1,6 +1,7 @@
 
-[B]16/05/2016 - Versão 1.8a[/B]
+[B]16/05/2016 - Versão 1.9[/B]
 - Renovação estética para os utilizadores do Aeon Nox 5 para que as imagens estejam todas bem formatadas.
+  Imagens em 400x550
  
 [B]12/05/2016 - Versão 1.8[/B]
 - Playlists renovadas com apoio de abertura de canal Jami no Youtube 
