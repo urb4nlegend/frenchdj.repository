@@ -1,4 +1,7 @@
 
+[B]16/05/2016 - Versão 1.8.1a[/B]
+- Renovação estética para os utilizadores do Aeon Nox 5 para que as imagens estejam todas bem formatadas.
+ 
 [B]12/05/2016 - Versão 1.8[/B]
 - Playlists renovadas com apoio de abertura de canal Jami no Youtube 
   Construção de repositório para alocar o addon
