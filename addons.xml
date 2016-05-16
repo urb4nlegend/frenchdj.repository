@@ -14,7 +14,7 @@
 	</extension>
 </addon>
 
-<addon id="plugin.video.jami" name="Jami" version="1.9" provider-name="frenchdj">
+<addon id="plugin.video.jami" name="Jami" version="2.0" provider-name="frenchdj">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
     <import addon="script.module.addon.common" version="2.0.0"/>
@@ -26,7 +26,7 @@
   </extension>
 
   <extension point="xbmc.addon.metadata">
-    <summary lang="en">Jami</summary>
+    <summary lang="en">jami</summary>
     <description lang="en">Canais Infantis em PT e BR. Toda a fonte vem do Youtube.
 Playlists dedicadas aos mais pequenos com muita desenhos animados recentes, classicos e musicais.
 Nota Importante:
