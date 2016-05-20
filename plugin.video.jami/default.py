@@ -16,6 +16,7 @@ icon    = local.getAddonInfo('icon')
 base    = 'plugin://plugin.video.youtube/'
 
 fan01 = 'special://home/addons/plugin.video.jami/resources/fan01.jpg'
+icon00 = 'special://home/addons/plugin.video.jami/resources/icon00.jpg'
 icon01 = 'special://home/addons/plugin.video.jami/resources/icon01.jpg'
 icon02 = 'special://home/addons/plugin.video.jami/resources/icon02.jpg'
 icon03 = 'special://home/addons/plugin.video.jami/resources/icon03.jpg'
@@ -28,6 +29,7 @@ icon09 = 'special://home/addons/plugin.video.jami/resources/icon09.jpg'
 icon10 = 'special://home/addons/plugin.video.jami/resources/icon10.jpg'
 icon11 = 'special://home/addons/plugin.video.jami/resources/icon11.jpg'
 icon12 = 'special://home/addons/plugin.video.jami/resources/icon12.jpg'
+icon12a = 'special://home/addons/plugin.video.jami/resources/icon12a.jpg'
 icon13 = 'special://home/addons/plugin.video.jami/resources/icon13.jpg'
 icon14 = 'special://home/addons/plugin.video.jami/resources/icon14.jpg'
 icon15 = 'special://home/addons/plugin.video.jami/resources/icon15.jpg'
@@ -47,7 +49,7 @@ icon27 = 'special://home/addons/plugin.video.jami/resources/icon27.jpg'
 icon28 = 'special://home/addons/plugin.video.jami/resources/icon28.jpg'
 icon29 = 'special://home/addons/plugin.video.jami/resources/icon29.jpg'
 icon30 = 'special://home/addons/plugin.video.jami/resources/icon30.jpg'
-
+icon31 = 'special://home/addons/plugin.video.jami/resources/icon31.jpg'
 
 def run():
     plugintools.log("jami.run")
@@ -60,6 +62,7 @@ def run():
 
 def main_list(params):
 	plugintools.log("jami ===> " + repr(params))
+	plugintools.add_item(title = "[ Banana Cartoon ]", url = base + "channel/UCPeLZYqHrQdV4xdZ2Lj3Reg/", thumbnail = icon00, fanart = fan01, folder = True)
 	plugintools.add_item(title = "[ Angry Birds ]", url = base + "playlist/PLVZggjiHl7zWTZDWcXNok7JFZUlb8vdHZ/", thumbnail = icon01, fanart = fan01, folder = True)
 	plugintools.add_item(title = "Ruca - T01 a T24 [PT]", url = base + "playlist/PLsWbExGo1KPaYUuRSfzyF1X11Czip4259/", thumbnail = icon02, fanart = fan01, folder = True)
 	plugintools.add_item(title = "Max - T01 a T05 [PT]", url = base + "playlist/PLsWbExGo1KPbil5fBWgJlv2gQPTcABI7x/", thumbnail = icon03, fanart = fan01, folder = True)
@@ -72,6 +75,7 @@ def main_list(params):
 	plugintools.add_item(title = "Bob o Construtor [PT]", url = base + "playlist/PLrH5HKiu5jUd7KNHHylSmu_WvFZ1pyURq/", thumbnail = icon10, fanart = fan01, folder = True)
 	plugintools.add_item(title = "Thomas e Amigos [PT]", url = base + "playlist/PLZ-7k3FZDGmm5XODLaqSXX98OME6gk6Um/", thumbnail = icon11, fanart = fan01, folder = True)
 	plugintools.add_item(title = "Ovelha Choné [PT]", url = base + "playlist/PLsWbExGo1KParAPrKtn8aQfLnEFepaajb/", thumbnail = icon12, fanart = fan01, folder = True)
+	plugintools.add_item(title = "Minions [Curtas]", url = base + "playlist/PLsWbExGo1KPZI_81DrSHESnfli1Q-kGSv/", thumbnail = icon12a, fanart = fan01, folder = True)
 	plugintools.add_item(title = "Vila Moleza [PT]", url = base + "playlist/PLrH5HKiu5jUeWGDGh3EYBvMQ-eU1CSy4J/", thumbnail = icon13, fanart = fan01, folder = True)
 	plugintools.add_item(title = "Panda e os Caricas [PT]", url = base + "channel/UCvw-R-r3p6Hc-yj1qyoPslQ/", thumbnail = icon14, fanart = fan01, folder = True)
 	plugintools.add_item(title = "Hello Kitty [PT]", url = base + "playlist/PLsWbExGo1KPZxKeoOmZQNe-UpKotBwcbt/", thumbnail = icon15, fanart = fan01, folder = True)
@@ -90,7 +94,8 @@ def main_list(params):
 	plugintools.add_item(title = "Irmãos Grimm [PT]", url = base + "playlist/PLaerdHbAdrDIIi3LuIIdCRGdFoHe3lS_D/", thumbnail = icon27, fanart = fan01, folder = True)
 	plugintools.add_item(title = "Dartacão [PT]", url = base + "playlist/PLrH5HKiu5jUe8ZF8jwdtprpucMVEjRON5/", thumbnail = icon28, fanart = fan01, folder = True)
 	plugintools.add_item(title = "Era uma vez - 4 Temporadas [PT]", url = base + "playlist/PLsWbExGo1KPZRlqvLY2Ja_SAJZMgBcdxD/", thumbnail = icon29, fanart = fan01, folder = True)
-	plugintools.add_item(title = "Contos Infantis [PT]", url = base + "channel/UCOre4lsfRMaC62bOHUjPp2Q/", thumbnail = icon30, fanart = fan01, folder = True)
+	plugintools.add_item(title = "Rua Sésamo [PT]", url = base + "playlist/PLsWbExGo1KPZMSjszQz49Let2KEsNptif/", thumbnail = icon30, fanart = fan01, folder = True)
+	plugintools.add_item(title = "Contos Infantis [PT]", url = base + "channel/UCOre4lsfRMaC62bOHUjPp2Q/", thumbnail = icon31, fanart = fan01, folder = True)
 	xbmcplugin.setContent(int(sys.argv[1]), 'movies')
 	xbmc.executebuiltin('Container.SetViewMode(500)')
 	
