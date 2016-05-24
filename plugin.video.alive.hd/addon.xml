@@ -12,7 +12,7 @@
 	
   <extension point="xbmc.addon.metadata">
     <summary lang="en">alive.hd</summary>
-    <description lang="en">Concertos e prestações de Djs ao vivo com qualidade HD.
+    <description lang="en">Concertos e performances de Djs ao vivo com qualidade HD.
 Playlists organizadas por categorias com diversas vertentes Musicais .
 Toda a fonte  vem de utilizadores do Youtube.
 Nota Importante: Aconselhado a ultima versao do youtube 5.20.0.6.</description>
