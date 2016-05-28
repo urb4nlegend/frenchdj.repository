@@ -37,7 +37,7 @@ Nota Importante: Aconselhado a ultima versao do youtube 5.20.0.6.</description>
   </extension>
 </addon>
 
-<addon id="plugin.video.jami" name="Jami" version="2.2" provider-name="frenchdj">
+<addon id="plugin.video.jami" name="Jami" version="3.0" provider-name="frenchdj">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
     <import addon="script.module.addon.common" version="2.0.0"/>
@@ -52,7 +52,7 @@ Nota Importante: Aconselhado a ultima versao do youtube 5.20.0.6.</description>
     <summary lang="en">jami</summary>
     <description lang="en">Videos Infantis em [PT] e [BR].
 Toda a fonte vem do Youtube com playlists dedicadas aos mais pequenos, recheadas de desenhos animados recentes, classicos e musicais.
-Nota Importante: Aconselhado a ultima versao do youtube 5.20.0.6 e respetivo Login.</description>
+Nota Importante: Aconselhado a ultima versao do youtube 5.2.* </description>
     <platform>all</platform>
     <forum></forum>
     <website></website>
