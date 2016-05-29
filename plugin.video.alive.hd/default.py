@@ -20,6 +20,7 @@ iconAA = 'special://home/addons/plugin.video.alive.hd/resources/iconAA.png'
 iconAB = 'special://home/addons/plugin.video.alive.hd/resources/iconAB.png'
 iconAC = 'special://home/addons/plugin.video.alive.hd/resources/iconAC.png'
 iconAD = 'special://home/addons/plugin.video.alive.hd/resources/iconAD.png'
+iconAE = 'special://home/addons/plugin.video.alive.hd/resources/iconAE.png'
 icon01 = 'special://home/addons/plugin.video.alive.hd/resources/icon01.png'
 icon02 = 'special://home/addons/plugin.video.alive.hd/resources/icon02.png'
 icon03 = 'special://home/addons/plugin.video.alive.hd/resources/icon03.png'
@@ -52,6 +53,7 @@ def main_list(params):
 	plugintools.add_item(title = "Rock AM Ring", url = base + "playlist/PLqIQyrHgoWoICwYBKfnmuJRCIOB3U43Mb/", thumbnail = iconAB, fanart = fan01, folder = True)
 	plugintools.add_item(title = "Reading Festival", url = base + "playlist/PLqIQyrHgoWoIKuMCz7611QuRg2HpJDRan/", thumbnail = iconAC, fanart = fan01, folder = True)
 	plugintools.add_item(title = "Glastonbury Festival", url = base + "playlist/PLqIQyrHgoWoKIc6yJ6aDegiEfiXa_ELT3/", thumbnail = iconAD, fanart = fan01, folder = True)
+	plugintools.add_item(title = "Rock in Rio", url = base + "playlist/PLqIQyrHgoWoJNO3nTXAGpHHgacF-vUz7k/", thumbnail = iconAE, fanart = fan01, folder = True)
 	plugintools.add_item(title = "[ Jurassic Rock ]", url = base + "playlist/PLqIQyrHgoWoJ8e5adzV6VwgW-v9vg-Zc8/", thumbnail = icon01, fanart = fan01, folder = True)	
 	plugintools.add_item(title = "[ Rock & Blues ]", url = base + "playlist/PLqIQyrHgoWoIPZ4jKiDyJ6Sl2sCkIW0HU/", thumbnail = icon02, fanart = fan01, folder = True)
 	plugintools.add_item(title = "[ Hard & Heavy ]", url = base + "playlist/PLqIQyrHgoWoLIi9gYTzSXCVz7ng-5I-s2/", thumbnail = icon03, fanart = fan01, folder = True)
