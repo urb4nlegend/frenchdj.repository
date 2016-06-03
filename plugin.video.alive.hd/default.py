@@ -21,6 +21,7 @@ iconAB = 'special://home/addons/plugin.video.alive.hd/resources/iconAB.png'
 iconAC = 'special://home/addons/plugin.video.alive.hd/resources/iconAC.png'
 iconAD = 'special://home/addons/plugin.video.alive.hd/resources/iconAD.png'
 iconAE = 'special://home/addons/plugin.video.alive.hd/resources/iconAE.png'
+iconAF = 'special://home/addons/plugin.video.alive.hd/resources/iconAF.png'
 icon01 = 'special://home/addons/plugin.video.alive.hd/resources/icon01.png'
 icon02 = 'special://home/addons/plugin.video.alive.hd/resources/icon02.png'
 icon03 = 'special://home/addons/plugin.video.alive.hd/resources/icon03.png'
@@ -31,6 +32,7 @@ iconBA = 'special://home/addons/plugin.video.alive.hd/resources/iconBA.png'
 iconBB = 'special://home/addons/plugin.video.alive.hd/resources/iconBB.png'
 iconBC = 'special://home/addons/plugin.video.alive.hd/resources/iconBC.png'
 iconBD = 'special://home/addons/plugin.video.alive.hd/resources/iconBD.png'
+iconBE = 'special://home/addons/plugin.video.alive.hd/resources/iconBE.png'
 
 
 
@@ -49,21 +51,23 @@ def run():
 
 def main_list(params):
 	plugintools.log("alive.hd ===> " + repr(params))
-	plugintools.add_item(title = "Wacken Open Air", url = base + "playlist/PLqIQyrHgoWoKI8z1ODSIMFW103sIhXDJ5/", thumbnail = iconAA, fanart = fan01, folder = True)
-	plugintools.add_item(title = "Rock AM Ring", url = base + "playlist/PLqIQyrHgoWoICwYBKfnmuJRCIOB3U43Mb/", thumbnail = iconAB, fanart = fan01, folder = True)
-	plugintools.add_item(title = "Rock in Rio", url = base + "playlist/PLqIQyrHgoWoJNO3nTXAGpHHgacF-vUz7k/", thumbnail = iconAC, fanart = fan01, folder = True)
-	plugintools.add_item(title = "Glastonbury & T.I.T. Park", url = base + "playlist/PLqIQyrHgoWoKIc6yJ6aDegiEfiXa_ELT3/", thumbnail = iconAD, fanart = fan01, folder = True)
-	plugintools.add_item(title = "Reading Festival", url = base + "playlist/PLqIQyrHgoWoIKuMCz7611QuRg2HpJDRan/", thumbnail = iconAE, fanart = fan01, folder = True)
-	plugintools.add_item(title = "[ Classic Rock ]", url = base + "playlist/PLqIQyrHgoWoJ8e5adzV6VwgW-v9vg-Zc8/", thumbnail = icon01, fanart = fan01, folder = True)	
-	plugintools.add_item(title = "[ Rock & Blues ]", url = base + "playlist/PLqIQyrHgoWoIPZ4jKiDyJ6Sl2sCkIW0HU/", thumbnail = icon02, fanart = fan01, folder = True)
-	plugintools.add_item(title = "[ Hard & Heavy ]", url = base + "playlist/PLqIQyrHgoWoLIi9gYTzSXCVz7ng-5I-s2/", thumbnail = icon03, fanart = fan01, folder = True)
-	plugintools.add_item(title = "[ Nu Metal ]", url = base + "playlist/PLqIQyrHgoWoL5xlRnsrBGfqymXtyQzFQy/", thumbnail = icon04, fanart = fan01, folder = True)
-	plugintools.add_item(title = "[ Alternative ]", url = base + "playlist/PLqIQyrHgoWoKx_I2ZI76N9mbTkQh9rp8Z/", thumbnail = icon05, fanart = fan01, folder = True)
-	plugintools.add_item(title = "[ Electronic Dance ]", url = base + "playlist/PLqIQyrHgoWoLd9UevjdOPw7X-DywtMHl3/" , thumbnail = icon06, fanart = fan01, folder = True)	
+	plugintools.add_item(title = "Hardcore Worldwide", url = base + "playlist/PLqIQyrHgoWoJcT9kJK3gxyaFhkmCJzD-n/", thumbnail = iconAA, fanart = fan01, folder = True)
+	plugintools.add_item(title = "Wacken Open Air", url = base + "playlist/PLqIQyrHgoWoKI8z1ODSIMFW103sIhXDJ5/", thumbnail = iconAB, fanart = fan01, folder = True)
+	plugintools.add_item(title = "Rock AM Ring", url = base + "playlist/PLqIQyrHgoWoICwYBKfnmuJRCIOB3U43Mb/", thumbnail = iconAC, fanart = fan01, folder = True)
+	plugintools.add_item(title = "Rock in Rio", url = base + "playlist/PLqIQyrHgoWoJNO3nTXAGpHHgacF-vUz7k/", thumbnail = iconAD, fanart = fan01, folder = True)
+	plugintools.add_item(title = "Glastonbury & T.I.T.P.", url = base + "playlist/PLqIQyrHgoWoKIc6yJ6aDegiEfiXa_ELT3/", thumbnail = iconAE, fanart = fan01, folder = True)
+	plugintools.add_item(title = "Reading Festival", url = base + "playlist/PLqIQyrHgoWoIKuMCz7611QuRg2HpJDRan/", thumbnail = iconAF, fanart = fan01, folder = True)
+	plugintools.add_item(title = "[ 60s - 80s ]", url = base + "playlist/PLqIQyrHgoWoJ8e5adzV6VwgW-v9vg-Zc8/", thumbnail = icon01, fanart = fan01, folder = True)	
+	plugintools.add_item(title = "[ 1990 - 2016 ]", url = base + "playlist/PLqIQyrHgoWoIPZ4jKiDyJ6Sl2sCkIW0HU/", thumbnail = icon02, fanart = fan01, folder = True)
+	plugintools.add_item(title = "[ 1990 - 2016 ]", url = base + "playlist/PLqIQyrHgoWoLIi9gYTzSXCVz7ng-5I-s2/", thumbnail = icon03, fanart = fan01, folder = True)
+	plugintools.add_item(title = "[ 1990 - 2016 ]", url = base + "playlist/PLqIQyrHgoWoL5xlRnsrBGfqymXtyQzFQy/", thumbnail = icon04, fanart = fan01, folder = True)
+	plugintools.add_item(title = "[ 2000 - 2016 ]", url = base + "playlist/PLqIQyrHgoWoKx_I2ZI76N9mbTkQh9rp8Z/", thumbnail = icon05, fanart = fan01, folder = True)
+	plugintools.add_item(title = "[ 2010 - 2016 ]", url = base + "playlist/PLqIQyrHgoWoLd9UevjdOPw7X-DywtMHl3/", thumbnail = icon06, fanart = fan01, folder = True)	
 	plugintools.add_item(title = "Sónar Barcelona ", url = base + "playlist/PLqIQyrHgoWoKKQ6hMB7MS_I_zNkfppS5C/", thumbnail = iconBA, fanart = fan01, folder = True)
 	plugintools.add_item(title = "Boiler Room", url = base + "playlist/PLqIQyrHgoWoKZ5l0puIUoPIY4j809zPf2/", thumbnail = iconBB, fanart = fan01, folder = True)
 	plugintools.add_item(title = "Space Ibiza", url = base + "playlist/PLqIQyrHgoWoJWjpjC5yXNpbWBrhYrw-9m/", thumbnail = iconBC, fanart = fan01, folder = True)
 	plugintools.add_item(title = "Dance Trippin TV", url = base + "playlist/PLqIQyrHgoWoLppvZwVuUl51rOVlaP_XW3/", thumbnail = iconBD, fanart = fan01, folder = True)
+	plugintools.add_item(title = "Hardcore Techno", url = base + "playlist/PLqIQyrHgoWoLK17TbOHNTf55uBdja4rmO/", thumbnail = iconBE, fanart = fan01, folder = True)
 	
 	xbmcplugin.setContent(int(sys.argv[1]), 'movies')
 	xbmc.executebuiltin('Container.SetViewMode(500)')
