@@ -1,4 +1,7 @@
 
+[B]06/06/2016 - Versão 1.5 [/B] 
+- Adicionado Helfest. Novos icones para duas categorias.
+  
 [B]03/06/2016 - Versão 1.4 [/B] 
 - Adicionado Categoria Hardcore World Wide e Hardcore Techno. Juntei datas nas descriçoes das categorias gerais.
   Tradução do texto para Inglês. 
