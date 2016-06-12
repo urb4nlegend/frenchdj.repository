@@ -80,7 +80,7 @@ Nota Importante: Aconselhado a ultima versao do youtube 5.20.0.6.</description>
   </extension>
 </addon>
 
-<addon id="plugin.video.pt.docs.hd" name="PT DocS HD" version="2.3" provider-name="frenchdj">
+<addon id="plugin.video.pt.docs.hd" name="PT DocS HD" version="2.3a" provider-name="frenchdj">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
     <import addon="script.module.addon.common" version="2.0.0"/>
