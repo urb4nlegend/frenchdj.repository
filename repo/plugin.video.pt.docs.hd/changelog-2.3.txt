@@ -1,3 +1,7 @@
+[B]12/06/2016 - Versão 2.3[/B] 
+- Adicionada categoria Desporto Global e dois novos canais do Youtube
+
+
 [B]21/05/2016 - Versão 2.2[/B] 
 - Eliminada a obrigação de Login no Youtube
  Pequena atualização das capas para 450x300. Adicionada mais uma categoria
