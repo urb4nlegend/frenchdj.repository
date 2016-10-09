@@ -44,7 +44,7 @@
 
 <addon id="plugin.video.jami"
        name="Jami"
-       version="5.2"
+       version="5.3"
        provider-name="frenchdj">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
