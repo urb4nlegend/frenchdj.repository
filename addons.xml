@@ -129,7 +129,7 @@ Nota Importante: Aconselhado a ultima versao do youtube 5.20.0.6.</description>
 
 <addon id="plugin.video.pt.docs.hd"
        name="PT DocS HD"
-       version="3.0"
+       version="3.1"
        provider-name="frenchdj">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
