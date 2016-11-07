@@ -16,7 +16,7 @@
 
 <addon id="plugin.video.alive.hd"
        name="Alive HD"
-       version="3.0"
+       version="3.1"
        provider-name="frenchdj">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
@@ -36,70 +36,9 @@
   </extension>
   <extension point="xbmc.addon.metadata">
     <summary>Alive HD</summary>
-    <description>[ENG] Concerts and Djs live performances with HD quality. Playlists organized by categories and any source comes from Youtube users. Advised the latest version of youtube 5.2.*
-[PT] Concertos e performances de Djs ao vivo com qualidade HD. Playlists organizadas por categorias com diversas vertentes Musicais. Toda a fonte  vem de utilizadores do Youtube. Aconselhado a ultima versao do youtube 5.2.* </description>
-    <platform>all</platform>
-  </extension>
-</addon>
-
-<addon id="plugin.video.frenchdj.media.center"
-       name="Frenchdj Media Center"
-       version="1.0"
-       provider-name="frenchdj">
-  <requires>
-    <import addon="xbmc.python" version="2.1.0"/>
-    <import addon="script.module.beautifulsoup" version="3.2.1"/>
-    <import addon="script.module.simple.downloader" version="0.9.4"/>
-    <import addon="script.module.beautifulsoup4" />
-    <import addon="script.module.requests" />
-    <import addon="script.module.httplib2" />
-    <import addon="script.module.youtube.dl" optional="true"/>
-    <import addon="plugin.video.youtube" optional="true" />
-    <import addon="script.module.urlresolver" optional="false"/>
-    <import addon="script.module.simplejson" />
-     <import addon="script.module.livestreamer" optional="true"/>
-  </requires>
-  <extension point="xbmc.python.pluginsource" library="default.py">
-    <provides>video</provides>
-  </extension>
-  <extension point="xbmc.addon.metadata">
-    <summary>Frenchdj Media Center</summary>
-    <description>Media Center pensado para o kodi com os seguintes addons:
-[B]Alive HD[/B] - Concertos e performances de Djs com Qualidade HD.
-[B]PT.DocS.HD[/B] - Documentarios em [PT] e [BR] com qualidade HD.
-[B]Jami[/B] - Videos Infantis em [PT] e [BR].
-[B]Traquinas[/B] - Desenhos animados e filmes infantis em [PT] e [BR].
-
-[B][COLOR lime] Aconselhado a ultima versao do YOUTUBE 5.2.* e o URL RESOLVER tem de estar ativo e atualizado no Kodi.[/COLOR][/B]</description>
-    <platform>all</platform>
-  </extension>
-</addon>
-
-<addon id="plugin.video.jami"
-       name="Jami"
-       version="5.5"
-       provider-name="frenchdj">
-  <requires>
-    <import addon="xbmc.python" version="2.1.0"/>
-    <import addon="script.module.beautifulsoup" version="3.2.1"/>
-    <import addon="script.module.simple.downloader" version="0.9.4"/>
-    <import addon="script.module.beautifulsoup4" />
-    <import addon="script.module.requests" />
-    <import addon="script.module.httplib2" />
-    <import addon="script.module.youtube.dl" optional="true"/>
-    <import addon="plugin.video.youtube" optional="true" />
-    <import addon="script.module.urlresolver" optional="true"/>
-    <import addon="script.module.simplejson" />
-     <import addon="script.module.livestreamer" optional="true"/>
-  </requires>
-  <extension point="xbmc.python.pluginsource" library="default.py">
-    <provides>video</provides>
-  </extension>
-  <extension point="xbmc.addon.metadata">
-    <summary>Jami</summary>
-    <description>Videos Infantis em [PT] e [BR].
-Toda a fonte vem do Youtube com playlists dedicadas aos mais pequenos, recheadas de desenhos animados recentes, classicos e musicais.
-Nota Importante: Aconselhado a ultima versao do youtube 5.2.*</description>
+    <description>Concerts and Djs live performances with HD quality.
+Playlists organized by categories and any source comes from Youtube users. Advised the latest version of youtube 5.2.*
+</description>
     <platform>all</platform>
   </extension>
 </addon>
@@ -124,66 +63,6 @@ Nota Importante: Aconselhado a ultima versao do youtube 5.20.0.6.</description>
     <platform>all</platform>
     <forum></forum>
     <website></website>
-  </extension>
-</addon>
-
-<addon id="plugin.video.pt.docs.hd"
-       name="PT DocS HD"
-       version="3.1"
-       provider-name="frenchdj">
-  <requires>
-    <import addon="xbmc.python" version="2.1.0"/>
-    <import addon="script.module.beautifulsoup" version="3.2.1"/>
-    <import addon="script.module.simple.downloader" version="0.9.4"/>
-    <import addon="script.module.beautifulsoup4" />
-    <import addon="script.module.requests" />
-    <import addon="script.module.httplib2" />
-    <import addon="script.module.youtube.dl" optional="true"/>
-    <import addon="plugin.video.youtube" optional="true" />
-    <import addon="script.module.urlresolver" optional="true"/>
-    <import addon="script.module.simplejson" />
-     <import addon="script.module.livestreamer" optional="true"/>
-  </requires>
-  <extension point="xbmc.python.pluginsource" library="default.py">
-    <provides>video</provides>
-  </extension>
-  <extension point="xbmc.addon.metadata">
-    <summary>PT DocS HD</summary>
-    <description>Documentarios legendados ou dobrados em [PT] e [BR] com qualidade HD.
-Playlists organizadas por categorias com assuntos historicos e da actualidade .
-Toda a fonte  vem de utilizadores do Youtube.
-Nota Importante: Aconselhado a ultima versao do youtube 5.2.*</description>
-    <platform>all</platform>
-  </extension>
-</addon>
-
-<addon id="plugin.video.traquinas"
-       name="Traquinas"
-       version="2.2"
-       provider-name="frenchdj">
-  <requires>
-    <import addon="xbmc.python" version="2.1.0"/>
-    <import addon="script.module.beautifulsoup" version="3.2.1"/>
-    <import addon="script.module.simple.downloader" version="0.9.4"/>
-    <import addon="script.module.beautifulsoup4" />
-    <import addon="script.module.requests" />
-    <import addon="script.module.httplib2" />
-    <import addon="script.module.youtube.dl" optional="true"/>
-    <import addon="plugin.video.youtube" optional="true" />
-    <import addon="script.module.urlresolver" optional="true"/>
-    <import addon="script.module.simplejson" />
-     <import addon="script.module.livestreamer" optional="true"/>
-  </requires>
-  <extension point="xbmc.python.pluginsource" library="default.py">
-    <provides>video</provides>
-  </extension>
-  <extension point="xbmc.addon.metadata">
-    <summary>Traquinas Entertenimento</summary>
-    <description>Desenhos animados e filmes infantis em [PT] e [BR].
-Algumas categorias com legendas em [PT].
-
-[B][COLOR lime]Para que haja um bom funcionamento deste addon, o URL RESOLVER tem de estar activo e atualizado no kodi.[/COLOR][/B]</description>
-    <platform>all</platform>
   </extension>
 </addon>
 </addons>

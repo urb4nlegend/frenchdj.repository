@@ -1,7 +1,0 @@
-
-[B]20/05/2016 - Versão 1.1[/B] 
-- Eliminada a necessidade de login obrigatório no Youtube. 
-  Adicionado Luís Otrebla como provider
-
-[B]16/05/2016 - Versão 1.0[/B] 
-- Versão de lançamento
