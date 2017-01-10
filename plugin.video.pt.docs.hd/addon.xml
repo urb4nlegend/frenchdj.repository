@@ -22,7 +22,7 @@
   <extension point="xbmc.addon.metadata">
     <summary>PT.DocS.HD</summary>
     <description>Documentarios legendados ou dobrados em [PT] e [BR] com qualidade HD.
-Playlists organizadas por temáticas com assuntos historicos e da actualidade .
+Playlists organizadas por categorias com assuntos historicos e da actualidade .
 Toda a fonte  vem de utilizadores do Youtube.
 [B][COLOR lime][ Aconselhado a ultima versao do youtube 5.*.* ][/B][/COLOR]</description>
     <platform>all</platform>
