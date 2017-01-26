@@ -1,28 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="plugin.video.alive.hd"
        name="Alive.HD"
-       version="4.0"
+       version="4.1"
        provider-name="frenchdj">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
-    <import addon="script.module.beautifulsoup" version="3.2.1"/>
+	<import addon="script.module.beautifulsoup" version="3.2.1"/>
     <import addon="script.module.simple.downloader" version="0.9.4"/>
     <import addon="script.module.beautifulsoup4" />
+    <import addon="script.module.simple.downloader" version="0.9.4"/>
     <import addon="script.module.requests" />
-    <import addon="script.module.httplib2" />
     <import addon="script.module.youtube.dl" optional="true"/>
-    <import addon="plugin.video.youtube" optional="true" />
-    <import addon="script.module.urlresolver" optional="true"/>
-    <import addon="script.module.simplejson" />    
-     <import addon="script.module.livestreamer" optional="true"/>
-  </requires>
+    <import addon="plugin.video.youtube" version="3.0.0"/>
+    </requires>
   <extension point="xbmc.python.pluginsource" library="default.py">
     <provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
-    <summary>Alive.HD</summary>
+    <summary lang="en">Alive.HD</summary>
     <description>Concerts and Djs live performances in HD quality. 
-Playlists organized by categories and any source comes from Youtube users. 
+Plailsts organized by categories and any source comes from Youtube users. 
 [B][COLOR lime]Advised the latest version of youtube 5.*.*[/B][/COLOR]</description>
     <platform>all</platform>
   </extension>
