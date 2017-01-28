@@ -79,7 +79,7 @@ def makeRequest(url, headers=None):
 				
 def SKindex():
     addon_log("SKindex")
-    addDir('Favorites','Favorites',4,'http://i.imgur.com/bJXmzXA.png' ,  FANART,'','','','')
+    addDir('[B][COLOR deepskyblue][ Favorites ][/COLOR][/B]','[B][COLOR deepskyblue][ Favorites ][/COLOR][/B]',4,'http://i.imgur.com/bJXmzXA.png' ,  FANART,'','','','')
     getData(_Edit.MainBase,'')
     xbmcplugin.endOfDirectory(int(sys.argv[1]))
 		
@@ -1872,11 +1872,11 @@ def addDir(name,url,mode,iconimage,fanart,description,genre,date,credits,showcon
                 contextMenu.append(('Download','XBMC.RunPlugin(%s?url=%s&mode=9&name=%s)'
                                     %(sys.argv[0], urllib.quote_plus(url), urllib.quote_plus(name))))
             elif showcontext == 'fav':
-                contextMenu.append(('Remove from Add-on Favorites','XBMC.RunPlugin(%s?mode=6&name=%s)'
+                contextMenu.append(('[COLOR white]Remove from [B][COLOR lime]Alive.HD[/COLOR][/B][COLOR white] Favorite[/COLOR]','XBMC.RunPlugin(%s?mode=6&name=%s)'
                                     %(sys.argv[0], urllib.quote_plus(name))))
 									
             if not name in FAV:
-                contextMenu.append(('Add to [B][COLOR lime]Alive.HD[/COLOR][/B] Favorite','XBMC.RunPlugin(%s?mode=5&name=%s&url=%s&iconimage=%s&fanart=%s&fav_mode=%s)'
+                contextMenu.append(('[COLOR white]Add to [B][COLOR lime]Alive.HD[/COLOR][/B][COLOR white] Favorite[/COLOR]','XBMC.RunPlugin(%s?mode=5&name=%s&url=%s&iconimage=%s&fanart=%s&fav_mode=%s)'
                          %(sys.argv[0], urllib.quote_plus(name), urllib.quote_plus(url), urllib.quote_plus(iconimage), urllib.quote_plus(fanart), mode)))
             liz.addContextMenuItems(contextMenu)
         ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
@@ -2133,7 +2133,7 @@ def addLink(url,name,iconimage,fanart,description,genre,date,showcontext,playlis
             contextMenu = []
             if showcontext == 'fav':
                 contextMenu.append(
-                    ('Remove from Add-on Favorites','XBMC.RunPlugin(%s?mode=6&name=%s)'
+                    ('[COLOR white]Remove from [B][COLOR lime]Alive.HD[/COLOR][/B] [COLOR white]Favorite[/COLOR]','XBMC.RunPlugin(%s?mode=6&name=%s)'
                      %(sys.argv[0], urllib.quote_plus(name)))
                      )
             elif not name in FAV:
@@ -2145,7 +2145,7 @@ def addLink(url,name,iconimage,fanart,description,genre,date,showcontext,playlis
                     fav_params += 'playlist='+urllib.quote_plus(str(playlist).replace(',','||'))
                 if regexs:
                     fav_params += "&regexs="+regexs
-                contextMenu.append(('Add to [B][COLOR lime]Alive.HD[/COLOR][/B] Favorite','XBMC.RunPlugin(%s)' %fav_params))
+                contextMenu.append(('[COLOR white]Add to [B][COLOR lime]Alive.HD[/COLOR][/B] [COLOR white]Favorite[/COLOR]','XBMC.RunPlugin(%s)' %fav_params))
             liz.addContextMenuItems(contextMenu)
        
         if not playlist is None:
