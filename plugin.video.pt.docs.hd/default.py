@@ -79,7 +79,7 @@ def makeRequest(url, headers=None):
 				
 def SKindex():
     addon_log("SKindex")
-    addDir('[B][COLOR deepskyblue][ Favoritos ][/COLOR][/B]','[B][COLOR deepskyblue][ Favoritos ][/COLOR][/B]',4,'http://imgur.com/4z8iGDK.png' ,  FANART,'','','','')
+    addDir('[B][COLOR deepskyblue][ Favoritos ][/COLOR][/B]','[B][COLOR deepskyblue][ Favoritos ][/COLOR][/B]',4,'http://imgur.com/4z8iGDK.png' ,  FANART,'http://i.imgur.com/udOMn34.gif','http://i.imgur.com/udOMn34.gif','http://i.imgur.com/udOMn34.gif','http://i.imgur.com/udOMn34.gif')
     getData(urllib1.MainBase,'')
     xbmcplugin.endOfDirectory(int(sys.argv[1]))
 		
