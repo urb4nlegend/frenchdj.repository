@@ -38,7 +38,7 @@ history = os.path.join(profile, 'history')
 
 REV = os.path.join(profile, 'list_revision')
 icon = os.path.join(home, 'icon.png')
-FANART = os.path.join(home, 'fanart.jpg')
+FANART = os.path.join(home, 'fanart.gif')
 source_file = os.path.join(profile, 'source_file')
 functions_dir = profile
 
@@ -54,7 +54,7 @@ else: SOURCES = []
 
 def addon_log(string):
     if debug == 'true':
-        xbmc.log("[addon.live.pt.docs.hd Lists-%s]: %s" %(addon_version, string))
+        xbmc.log("[plugin.video.pt.docs.hd Lists-%s]: %s" %(addon_version, string))
 
 
 def makeRequest(url, headers=None):
@@ -694,13 +694,22 @@ def getItems(items,fanart):
                 elif len(item('utube')) >0:
                     for i in item('utube'):
                         if not i.string == None:
-                            if len(i.string) == 11:
-                                utube = 'plugin://plugin.video.youtube/play/?video_id='+ i.string 
-                            elif i.string.startswith('PL') and not '&order=' in i.string :
+                            if ' ' in i.string :
+                                utube = 'plugin://plugin.video.youtube/search/?q='+ urllib.quote_plus(i.string)
+                                isJsonrpc=utube
+                            elif len(i.string) == 11:
+                                utube = 'plugin://plugin.video.youtube/play/?video_id='+ i.string
+                            elif (i.string.startswith('PL') and not '&order=' in i.string) or i.string.startswith('UU'):
                                 utube = 'plugin://plugin.video.youtube/play/?&order=default&playlist_id=' + i.string
-                            else:
-                                utube = 'plugin://plugin.video.youtube/play/?playlist_id=' + i.string 
-                    url.append(utube)
+                            elif i.string.startswith('PL') or i.string.startswith('UU'):
+                                utube = 'plugin://plugin.video.youtube/play/?playlist_id=' + i.string
+                            elif i.string.startswith('UC') and len(i.string) > 12:
+                                utube = 'plugin://plugin.video.youtube/channel/' + i.string + '/'
+                                isJsonrpc=utube
+                            elif not i.string.startswith('UC') and not (i.string.startswith('PL'))  :
+                                utube = 'plugin://plugin.video.youtube/user/' + i.string + '/'
+                                isJsonrpc=utube
+                        url.append(utube)
              
             except:
                 addon_log('Error <link> element, Passing:'+name.encode('utf-8', 'ignore'))
@@ -1200,6 +1209,113 @@ def playmedia(media_url):
     except:
         traceback.print_exc()
     return ''
+	
+def kodiJsonRequest(params):
+    data = json.dumps(params)
+    request = xbmc.executeJSONRPC(data)
+
+    try:
+        response = json.loads(request)
+    except UnicodeDecodeError:
+        response = json.loads(request.decode('utf-8', 'ignore'))
+
+    try:
+        if 'result' in response:
+            return response['result']
+        return None
+    except KeyError:
+        logger.warn("[%s] %s" % (params['method'], response['error']['message']))
+        return None
+		
+def setKodiProxy(proxysettings=None):
+
+    if proxysettings==None:
+#        print 'proxy set to nothing'
+        xbmc.executeJSONRPC('{"jsonrpc":"2.0", "method":"Settings.SetSettingValue", "params":{"setting":"network.usehttpproxy", "value":false}, "id":1}')
+    else:
+        
+        ps=proxysettings.split(':')
+        proxyURL=ps[0]
+        proxyPort=ps[1]
+        proxyType=ps[2]
+        proxyUsername=None
+        proxyPassword=None
+        
+        if len(ps)>3 and '@' in ps[3]: #jairox ###proxysettings
+            proxyUsername=ps[3].split('@')[0] #jairox ###ps[3]
+            proxyPassword=ps[3].split('@')[1] #jairox ###proxysettings.split('@')[-1]
+
+#        print 'proxy set to', proxyType, proxyURL,proxyPort
+        xbmc.executeJSONRPC('{"jsonrpc":"2.0", "method":"Settings.SetSettingValue", "params":{"setting":"network.usehttpproxy", "value":true}, "id":1}')
+        xbmc.executeJSONRPC('{"jsonrpc":"2.0", "method":"Settings.SetSettingValue", "params":{"setting":"network.httpproxytype", "value":' + str(proxyType) +'}, "id":1}')
+        xbmc.executeJSONRPC('{"jsonrpc":"2.0", "method":"Settings.SetSettingValue", "params":{"setting":"network.httpproxyserver", "value":"' + str(proxyURL) +'"}, "id":1}')
+        xbmc.executeJSONRPC('{"jsonrpc":"2.0", "method":"Settings.SetSettingValue", "params":{"setting":"network.httpproxyport", "value":' + str(proxyPort) +'}, "id":1}')
+        
+        
+        if not proxyUsername==None:
+            xbmc.executeJSONRPC('{"jsonrpc":"2.0", "method":"Settings.SetSettingValue", "params":{"setting":"network.httpproxyusername", "value":"' + str(proxyUsername) +'"}, "id":1}')
+            xbmc.executeJSONRPC('{"jsonrpc":"2.0", "method":"Settings.SetSettingValue", "params":{"setting":"network.httpproxypassword", "value":"' + str(proxyPassword) +'"}, "id":1}')
+
+        
+def getConfiguredProxy():
+    proxyActive = kodiJsonRequest({'jsonrpc': '2.0', "method":"Settings.GetSettingValue", "params":{"setting":"network.usehttpproxy"}, 'id': 1})['value']
+#    print 'proxyActive',proxyActive
+    proxyType = kodiJsonRequest({'jsonrpc': '2.0', "method":"Settings.GetSettingValue", "params":{"setting":"network.httpproxytype"}, 'id': 1})['value']
+
+    if proxyActive: # PROXY_HTTP
+        proxyURL = kodiJsonRequest({'jsonrpc': '2.0', "method":"Settings.GetSettingValue", "params":{"setting":"network.httpproxyserver"}, 'id': 1})['value']
+        proxyPort = unicode(kodiJsonRequest({'jsonrpc': '2.0', "method":"Settings.GetSettingValue", "params":{"setting":"network.httpproxyport"}, 'id': 1})['value'])
+        proxyUsername = kodiJsonRequest({'jsonrpc': '2.0', "method":"Settings.GetSettingValue", "params":{"setting":"network.httpproxyusername"}, 'id': 1})['value']
+        proxyPassword = kodiJsonRequest({'jsonrpc': '2.0', "method":"Settings.GetSettingValue", "params":{"setting":"network.httpproxypassword"}, 'id': 1})['value']
+
+        if proxyUsername and proxyPassword and proxyURL and proxyPort:
+            return proxyURL + ':' + str(proxyPort)+':'+str(proxyType) + ':' + proxyUsername + '@' + proxyPassword
+        elif proxyURL and proxyPort:
+            return proxyURL + ':' + str(proxyPort)+':'+str(proxyType)
+    else:
+        return None
+        
+def playmediawithproxy(media_url, name, iconImage,proxyip,port, proxyuser=None, proxypass=None): #jairox
+
+    progress = xbmcgui.DialogProgress()
+    progress.create('Progress', 'Playing with custom proxy')
+    progress.update( 10, "", "setting proxy..", "" )
+    proxyset=False
+    existing_proxy=''
+    #print 'playmediawithproxy'
+    try:
+        
+        existing_proxy=getConfiguredProxy()
+        print 'existing_proxy',existing_proxy
+        #read and set here
+        #jairox
+        if not proxyuser == None:
+            setKodiProxy( proxyip + ':' + port + ':0:' + proxyuser + '@' + proxypass)
+        else:
+            setKodiProxy( proxyip + ':' + port + ':0')
+
+        #print 'proxy setting complete', getConfiguredProxy()
+        proxyset=True
+        progress.update( 80, "", "setting proxy complete, now playing", "" )
+        
+        progress.close()
+        progress=None
+        import  CustomPlayer
+        player = CustomPlayer.MyXBMCPlayer()
+        listitem = xbmcgui.ListItem( label = str(name), iconImage = iconImage, thumbnailImage = xbmc.getInfoImage( "ListItem.Thumb" ), path=media_url )
+        player.play( media_url,listitem)
+        xbmc.sleep(1000)
+        while player.is_active:
+            xbmc.sleep(200)
+    except:
+        traceback.print_exc()
+    if progress:
+        progress.close()
+    if proxyset:
+#        print 'now resetting the proxy back'
+        setKodiProxy(existing_proxy)
+#        print 'reset here'
+    return ''
     
         
 def get_saw_rtmp(page_value, referer=None):
@@ -1670,7 +1786,7 @@ def askCaptcha(m,html_page, cookieJar):
         else:
             captcha_url=page_+'/'+captcha_url
     
-    local_captcha = os.path.join(profile, str(iid)+"captcha.jpg" )
+    local_captcha = os.path.join(profile, str(iid)+"captcha.gif" )
     localFile = open(local_captcha, "wb")
     print ' c capurl',captcha_url
     req = urllib2.Request(captcha_url)
@@ -1767,7 +1883,7 @@ def getFavoritos():
                 addDir(name,url,i[4],iconimage,fanart,'','','','','fav')
 
 
-def addFavorite(name,url,iconimage,fanart,mode,playlist=None,regexs=None):
+def addFavoritos(name,url,iconimage,fanart,mode,playlist=None,regexs=None):
         favList = []
         if not os.path.exists(favorites + 'txt'):
             os.makedirs(favorites + 'txt')
@@ -1794,7 +1910,7 @@ def addFavorite(name,url,iconimage,fanart,mode,playlist=None,regexs=None):
             b.close()
 
 
-def rmFavorite(name):
+def rmFavoritos(name):
         data = json.loads(open(favorites).read())
         for index in range(len(data)):
             if data[index][0]==name:
@@ -1850,10 +1966,25 @@ def download_file(name, url):
         ret = dialog.yesno('pt.docs.hd', 'Do you want to add this file as a source?')
         if ret:
             addSource(os.path.join(addon.getSetting('save_location'), name))
+			
+def _search(url,name):
+   # print url,name
+    pluginsearchurls = ['plugin://plugin.video.youtube/kodion/search/list/',\
+             'plugin://plugin.video.dailymotion_com/?mode=search&amp;url',\
+             'plugin://plugin.video.vimeo/kodion/search/list/'\
+             ]
+    names = ['Youtube','DailyMotion','Vimeo']
+    dialog = xbmcgui.Dialog()
+    index = dialog.select('Choose a video source', names)
+
+    if index >= 0:
+        url = pluginsearchurls[index]
+#        print 'url',url
+        pluginquerybyJSON(url)
 
 
-def addDir(name,url,mode,iconimage,fanart,description,genre,date,credits,showcontext=False):
-        
+def addDir(name,url,mode,iconimage,fanart,description,genre,date,credits,showcontext=False,regexs=None,reg_url=None,allinfo={}):
+
         u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)+"&fanart="+urllib.quote_plus(fanart)
         ok=True
         if date == '':
@@ -1861,27 +1992,49 @@ def addDir(name,url,mode,iconimage,fanart,description,genre,date,credits,showcon
         else:
             description += '\n\nDate: %s' %date
         liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
-        liz.setInfo(type="Video", infoLabels={ "Title": name, "Plot": description, "Genre": genre, "dateadded": date, "credits": credits })
+        if len(allinfo) <1 :
+            liz.setInfo(type="Video", infoLabels={ "Title": name, "Plot": description, "Genre": genre, "dateadded": date, "credits": credits })
+        else:
+            liz.setInfo(type="Video", infoLabels= allinfo)
         liz.setProperty("Fanart_Image", fanart)
         if showcontext:
             contextMenu = []
+            parentalblock =addon.getSetting('parentalblocked')
+            parentalblock= parentalblock=="true"
+            parentalblockedpin =addon.getSetting('parentalblockedpin')
+#            print 'parentalblockedpin',parentalblockedpin
+            if len(parentalblockedpin)>0:
+                if parentalblock:
+                    contextMenu.append(('Disable Parental Block','XBMC.RunPlugin(%s?mode=55&name=%s)' %(sys.argv[0], urllib.quote_plus(name))))
+                else:
+                    contextMenu.append(('Enable Parental Block','XBMC.RunPlugin(%s?mode=56&name=%s)' %(sys.argv[0], urllib.quote_plus(name))))
+                    
             if showcontext == 'source':
+            
                 if name in str(SOURCES):
                     contextMenu.append(('Remove from Sources','XBMC.RunPlugin(%s?mode=8&name=%s)' %(sys.argv[0], urllib.quote_plus(name))))
+                    
+                    
             elif showcontext == 'download':
                 contextMenu.append(('Download','XBMC.RunPlugin(%s?url=%s&mode=9&name=%s)'
                                     %(sys.argv[0], urllib.quote_plus(url), urllib.quote_plus(name))))
             elif showcontext == 'fav':
-                contextMenu.append(('[COLOR white]Remover de [B][COLOR lime]PT.DocS.HD[/COLOR][/B] [COLOR white]Favoritos[/COLOR]','XBMC.RunPlugin(%s?mode=6&name=%s)'
+                contextMenu.append(('[COLOR white] Remover de [COLOR lime][B]PT.DocS.HD[/B] [COLOR white]Favoritos[/COLOR]','XBMC.RunPlugin(%s?mode=6&name=%s)'
                                     %(sys.argv[0], urllib.quote_plus(name))))
-									
+            if showcontext == '!!update':
+                fav_params2 = (
+                    '%s?url=%s&mode=17&regexs=%s'
+                    %(sys.argv[0], urllib.quote_plus(reg_url), regexs)
+                    )
+                contextMenu.append(('[COLOR yellow]!!update[/COLOR]','XBMC.RunPlugin(%s)' %fav_params2))
             if not name in FAV:
-                contextMenu.append(('[COLOR white]Adicionar a [B][COLOR lime]PT.DocS.HD[/COLOR][/B] [COLOR white]Favoritos[/COLOR]','XBMC.RunPlugin(%s?mode=5&name=%s&url=%s&iconimage=%s&fanart=%s&fav_mode=%s)'
+                contextMenu.append(('[COLOR white]Adicionar a  [COLOR lime][B]PT.DocS.HD[/B] [COLOR white]Favoritos[/COLOR]','XBMC.RunPlugin(%s?mode=5&name=%s&url=%s&iconimage=%s&fanart=%s&fav_mode=%s)'
                          %(sys.argv[0], urllib.quote_plus(name), urllib.quote_plus(url), urllib.quote_plus(iconimage), urllib.quote_plus(fanart), mode)))
             liz.addContextMenuItems(contextMenu)
         ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
-
         return ok
+		
+		
 def ytdl_download(url,title,media_type='video'):
     # play in xbmc while playing go back to contextMenu(c) to "!!Download!!"
     # Trial yasceen: seperate |User-Agent=
@@ -1905,83 +2058,6 @@ def ytdl_download(url,title,media_type='video'):
     else:
         xbmc.executebuiltin("XBMC.Notification(DOWNLOAD,First Play [COLOR yellow]WHILE playing download[/COLOR] ,10000)")
  
-def search(site_name,search_term=None):
-    thumbnail=''
-    if os.path.exists(history) == False or addon.getSetting('clearseachhistory')=='true':
-        SaveToFile(history,'')
-        addon.setSetting("clearseachhistory","false")
-    if site_name == 'history' :
-        content = LoadFile(history)
-        match = re.compile('(.+?):(.*?)(?:\r|\n)').findall(content)
-
-        for name,search_term in match:
-            if 'plugin://' in search_term:
-                addLink(search_term, name,thumbnail,'','','','','',None,'',total=int(len(match)))
-            else:
-                addDir(name+':'+search_term,name,26,icon,FANART,'','','','')
-    if not search_term:    
-        keyboard = xbmc.Keyboard('','Enter Search Term')
-        keyboard.doModal()
-        if (keyboard.isConfirmed() == False):
-            return
-        search_term = keyboard.getText()
-        if len(search_term) == 0:
-            return        
-    search_term = search_term.replace(' ','+')
-    search_term = search_term.encode('utf-8')
-    if 'youtube' in site_name:
-        #youtube = youtube#Lana Del Rey
-        import _ytplist
-
-        search_res = {}
-        search_res = _ytplist.YoUTube('searchYT',youtube=search_term,max_page=4,nosave='nosave')
-        total = len(search_res)
-        for item in search_res:
-            try:
-                name = search_res[item]['title']
-                date= search_res[item]['date']
-                try:
-                    description = search_res[item]['desc']
-                except Exception:
-                    description = 'UNAVAIABLE'
-
-                url = 'plugin://plugin.video.youtube/play/?video_id=' + search_res[item]['url']
-                thumbnail ='http://img.youtube.com/vi/'+search_res[item]['url']+'/0.jpg'
-                addLink(url, name,thumbnail,'','','','','',None,'',total)
-            except Exception:
-            	addon_log( 'This item is ignored::')
-        page_data = site_name +':'+ search_term + '\n'
-        SaveToFile(os.path.join(profile,'history'),page_data,append=True)
-    elif 'dmotion' in site_name:
-        urlMain = "https://api.dailymotion.com" 
-        #youtube = youtube#Lana Del Rey
-        import _DMsearch
-        familyFilter = str(addon.getSetting('familyFilter'))
-        _DMsearch.listVideos(urlMain+"/videos?fields=description,duration,id,owner.username,taken_time,thumbnail_large_url,title,views_total&search="+search_term+"&sort=relevance&limit=100&family_filter="+familyFilter+"&localization=en_EN&page=1")
-    
-        page_data = site_name +':'+ search_term+ '\n'
-        SaveToFile(os.path.join(profile,'history'),page_data,append=True)        
-    elif 'IMDBidplay' in site_name:
-        urlMain = "http://www.omdbapi.com/?t=" 
-        url= urlMain+search_term
-
-        headers = dict({'User-Agent':'Mozilla/5.0 (Windows NT 6.3; rv:33.0) Gecko/20100101 Firefox/33.0','Referer': 'http://joker.org/','Accept-Encoding':'gzip, deflate','Content-Type': 'application/json;charset=utf-8','Accept': 'application/json, text/plain, */*'})
-    
-        r=requests.get(url,headers=headers)
-        data = r.json()
-        res = data['Response']
-        if res == 'True':
-            imdbID = data['imdbID']
-            name= data['Title'] + data['Released']
-            dialog = xbmcgui.Dialog()
-            ret = dialog.yesno('Check Movie Title', 'PLAY :: %s ?'%name)
-            if ret:
-                url = 'plugin://plugin.video.pulsar/movie/'+imdbID+'/play'
-                page_data = name +':'+ url+ '\n'
-                SaveToFile(history,page_data,append=True)
-                return url
-        else:
-            xbmc.executebuiltin("XBMC.Notification(pt.docs.hd,No IMDB match found ,7000,"+icon+")")
 ## Lunatixz PseudoTV feature
 def ascii(string):
     if isinstance(string, basestring):
@@ -2015,44 +2091,42 @@ def SetViewThumbnail():
         xbmc.executebuiltin('Container.SetViewMode(500)')
 	
 	
-def pluginquerybyJSON(url):
-    json_query = uni('{"jsonrpc":"2.0","method":"Files.GetDirectory","params":{"directory":"%s","media":"video","properties":["thumbnail","title","year","dateadded","fanart","rating","season","episode","studio"]},"id":1}') %url
-
+def pluginquerybyJSON(url,give_me_result=None,playlist=False):
+    if 'audio' in url:
+        json_query = uni('{"jsonrpc":"2.0","method":"Files.GetDirectory","params": {"directory":"%s","media":"video", "properties": ["title", "album", "artist", "duration","thumbnail", "year"]}, "id": 1}') %url
+    else:
+        json_query = uni('{"jsonrpc":"2.0","method":"Files.GetDirectory","params":{"directory":"%s","media":"video","properties":[ "plot","playcount","director", "genre","votes","duration","trailer","premiered","thumbnail","title","year","dateadded","fanart","rating","season","episode","studio","mpaa"]},"id":1}') %url
     json_folder_detail = json.loads(sendJSON(json_query))
-    for i in json_folder_detail['result']['files'] :
-        url = i['file']
-        name = removeNonAscii(i['label'])
-        thumbnail = removeNonAscii(i['thumbnail'])
-        try:
+    #print json_folder_detail
+    if give_me_result:
+        return json_folder_detail
+    if json_folder_detail.has_key('error'):
+        return
+    else:
+
+        for i in json_folder_detail['result']['files'] :
+            meta ={}
+            url = i['file']
+            name = removeNonAscii(i['label'])
+            thumbnail = removeNonAscii(i['thumbnail'])
             fanart = removeNonAscii(i['fanart'])
-        except Exception:
-            fanart = ''
-        try:
-            date = i['year']
-        except Exception:
-            date = ''
-        try:
-            episode = i['episode']
-            season = i['season']
-            if episode == -1 or season == -1:
-                description = ''
+            meta = dict((k,v) for k, v in i.iteritems() if not v == '0' or not v == -1 or v == '')
+            meta.pop("file", None)
+            if i['filetype'] == 'file':
+                if playlist:
+                    play_playlist(name,url,queueVideo=None)
+                    continue
+                else:
+                    addLink(url,name,thumbnail,fanart,'','','','',None,'',total=len(json_folder_detail['result']['files']))
+                    #xbmc.executebuiltin("Container.SetViewMode(500)")
+                    if i['type'] and i['type'] == 'tvshow' :
+                        xbmcplugin.setContent(int(sys.argv[1]), 'tvshows')
+                    elif i['episode'] > 0 :
+                        xbmcplugin.setContent(int(sys.argv[1]), 'episodes')
+
             else:
-                description = '[COLOR yellow] S' + str(season)+'[/COLOR][COLOR hotpink] E' + str(episode) +'[/COLOR]'
-        except Exception:
-            description = ''
-        try:
-            studio = i['studio']
-            if studio:
-                description += '\n Studio:[COLOR steelblue] ' + studio[0] + '[/COLOR]'
-        except Exception:
-            studio = ''
-
-        if i['filetype'] == 'file':
-            addLink(url,name,thumbnail,fanart,description,'',date,'',None,'',total=len(json_folder_detail['result']['files']))
-            #xbmc.executebuiltin("Container.SetViewMode(500)")
-
-        else:
-            addDir(name,url,53,thumbnail,fanart,description,'',date,'')
+                addDir(name,url,53,thumbnail,fanart,'','','','')
+        xbmcplugin.endOfDirectory(int(sys.argv[1]))
             #xbmc.executebuiltin("Container.SetViewMode(500)")
 
 def addLink(url,name,iconimage,fanart,description,genre,date,showcontext,playlist,regexs,total,setCookie=""):
@@ -2086,14 +2160,17 @@ def addLink(url,name,iconimage,fanart,description,genre,date,showcontext,playlis
           
             if '&' in url and not '&amp;' in url :
                 url = url.replace('&','&amp;')
-            url = 'plugin://plugin.video.pulsar/play?uri=' + url
             mode = '12'
                      
         else: 
             mode = '12'
       
             contextMenu.append(('[COLOR white]!!Download Currently Playing!![/COLOR]','XBMC.RunPlugin(%s?url=%s&mode=21&name=%s)'
-                                    %(sys.argv[0], urllib.quote_plus(url), urllib.quote_plus(name))))           
+                                    %(sys.argv[0], urllib.quote_plus(url), urllib.quote_plus(name))))
+        if 'plugin://plugin.video.youtube/play/?video_id=' in url:
+              yt_audio_url = url.replace('plugin://plugin.video.youtube/play/?video_id=','https://www.youtube.com/watch?v=')
+              contextMenu.append(('!!Download [COLOR blue]Audio!![/COLOR]','XBMC.RunPlugin(%s?url=%s&mode=24&name=%s)'
+                                      %(sys.argv[0], urllib.quote_plus(yt_audio_url), urllib.quote_plus(name))))									
         u=sys.argv[0]+"?"
         play_list = False
       
@@ -2294,7 +2371,7 @@ elif mode==4:
     xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 elif mode==5:
-    addon_log("addFavorite")
+    addon_log("addFavoritos")
     try:
         name = name.split('\\ ')[1]
     except:
@@ -2303,10 +2380,10 @@ elif mode==5:
         name = name.split('  - ')[0]
     except:
         pass
-    addFavorite(name,url,iconimage,fanart,fav_mode)
+    addFavoritos(name,url,iconimage,fanart,fav_mode)
 
 elif mode==6:
-    addon_log("rmFavorite")
+    addon_log("rmFavoritos")
     try:
         name = name.split('\\ ')[1]
     except:
@@ -2315,7 +2392,7 @@ elif mode==6:
         name = name.split('  - ')[0]
     except:
         pass
-    rmFavorite(name)
+    rmFavoritos(name)
 
 elif mode==7:
     addon_log("addSource")
@@ -2391,13 +2468,8 @@ elif mode==24:
     addon_log("Audio only youtube download")
     ytdl_download(url,name,'audio')
 elif mode==25:
-    addon_log("YouTube/DMotion")
-    search(url)
-    xbmcplugin.endOfDirectory(int(sys.argv[1]))
-elif mode==26:
-    addon_log("YouTube/DMotion From Search History")
-    name = name.split(':')
-    search(url,search_term=name[1])
+    addon_log("Searchin Other plugins")
+    _search(url,name)
     xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 elif mode==30:
@@ -2411,4 +2483,4 @@ elif mode==40:
 elif mode==53:
     addon_log("Requesting JSON-RPC Items")
     pluginquerybyJSON(url)
-    xbmcplugin.endOfDirectory(int(sys.argv[1]))
+    #xbmcplugin.endOfDirectory(int(sys.argv[1]))
