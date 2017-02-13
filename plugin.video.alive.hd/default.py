@@ -38,7 +38,7 @@ history = os.path.join(profile, 'history')
 
 REV = os.path.join(profile, 'list_revision')
 icon = os.path.join(home, 'icon.png')
-FANART = os.path.join(home, 'fanart.jpg')
+FANART = os.path.join(home, 'fanart.gif')
 source_file = os.path.join(profile, 'source_file')
 functions_dir = profile
 
@@ -79,7 +79,7 @@ def makeRequest(url, headers=None):
 				
 def SKindex():
     addon_log("SKindex")
-    addDir('[B][COLOR deepskyblue][ Favorites ][/COLOR][/B]','[B][COLOR deepskyblue][ Favorites ][/COLOR][/B]',4,'http://i.imgur.com/bJXmzXA.png' ,  FANART,'','','','')
+    addDir('[B][COLOR deepskyblue][ Favorites ][/COLOR][/B]','[B][COLOR deepskyblue][ Favorites ][/COLOR][/B]',4,'http://i.imgur.com/bJXmzXA.png' ,  FANART,'http://imgur.com/mHi2wv6.gif','http://imgur.com/mHi2wv6.gif','http://imgur.com/mHi2wv6.gif','http://imgur.com/mHi2wv6.gif')
     getData(urllib1.MainBase,'')
     xbmcplugin.endOfDirectory(int(sys.argv[1]))
 		
@@ -1786,7 +1786,7 @@ def askCaptcha(m,html_page, cookieJar):
         else:
             captcha_url=page_+'/'+captcha_url
     
-    local_captcha = os.path.join(profile, str(iid)+"captcha.jpg" )
+    local_captcha = os.path.join(profile, str(iid)+"captcha.gif" )
     localFile = open(local_captcha, "wb")
     print ' c capurl',captcha_url
     req = urllib2.Request(captcha_url)
