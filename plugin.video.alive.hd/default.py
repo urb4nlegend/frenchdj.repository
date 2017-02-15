@@ -79,8 +79,8 @@ def makeRequest(url, headers=None):
 				
 def SKindex():
     addon_log("SKindex")
-    addDir('[B][COLOR deepskyblue][ Favorites ][/COLOR][/B]','[B][COLOR deepskyblue][ Favorites ][/COLOR][/B]',4,'http://i.imgur.com/bJXmzXA.png' ,  FANART,'http://imgur.com/6AQfAQQ.gif','http://imgur.com/6AQfAQQ.gif','http://imgur.com/6AQfAQQ.gif','http://imgur.com/6AQfAQQ.gif')
-    getData(urllib1.MainBase,'')
+    addDir('[B][COLOR deepskyblue][ Favorites ][/COLOR][/B]','[B][COLOR deepskyblue][ Favorites ][/COLOR][/B]',4,'http://i.imgur.com/bJXmzXA.png' ,  FANART,'','','','')
+    getData(urllib1.MainBase,FANART)
     xbmcplugin.endOfDirectory(int(sys.argv[1]))
 		
 	
@@ -113,7 +113,7 @@ def getSources():
                             genre = i['genre']
                         if i.has_key('credits'):
                             credits = i['credits']
-                        addDir(i['title'].encode('utf-8'),i['url'].encode('utf-8'),1,thumb,fanart,desc,genre,date,credits,'source')
+                        addDir(i['title'].encode('utf-8'),i['url'].encode('utf-8'),1,thumb,FANART,desc,genre,date,credits,'source')
 
             else:
                 if len(sources) == 1:
