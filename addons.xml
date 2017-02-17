@@ -42,7 +42,7 @@ Plailsts organized by categories and any source comes from Youtube users.
 
 <addon id="plugin.video.pt.docs.hd"
        name="PT.DocS.HD"
-       version="4.3"
+       version="4.3a"
        provider-name="frenchdj">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
