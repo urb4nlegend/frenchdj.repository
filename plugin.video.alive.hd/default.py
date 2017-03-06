@@ -2615,12 +2615,12 @@ def addLink(url,name,iconimage,fanart,description,genre,date,showcontext,playlis
             if 'listrepeat' in regexs:
                 isFolder=True
 #                print 'setting as folder in link'
-            contextMenu.append(('[COLOR white]!!Download Currently Playing!![/COLOR]','XBMC.RunPlugin(%s?url=%s&mode=21&name=%s)'
+            contextMenu.append(('[COLOR white]| Download Video |[/COLOR]','XBMC.RunPlugin(%s?url=%s&mode=21&name=%s)'
                                     %(sys.argv[0], urllib.quote_plus(url), urllib.quote_plus(name))))
         elif  (any(x in url for x in resolve_url) and  url.startswith('http')) or url.endswith('&mode=19'):
             url=url.replace('&mode=19','')
             mode = '19'
-            contextMenu.append(('[COLOR white]!!Download Currently Playing!![/COLOR]','XBMC.RunPlugin(%s?url=%s&mode=21&name=%s)'
+            contextMenu.append(('[COLOR white]| Download Video |[/COLOR]','XBMC.RunPlugin(%s?url=%s&mode=21&name=%s)'
                                     %(sys.argv[0], urllib.quote_plus(url), urllib.quote_plus(name))))
         elif url.endswith('&mode=18'):
             url=url.replace('&mode=18','')
@@ -2628,7 +2628,7 @@ def addLink(url,name,iconimage,fanart,description,genre,date,showcontext,playlis
             contextMenu.append(('[COLOR white]!!Download!![/COLOR]','XBMC.RunPlugin(%s?url=%s&mode=23&name=%s)'
                                     %(sys.argv[0], urllib.quote_plus(url), urllib.quote_plus(name))))
             if addon.getSetting('dlaudioonly') == 'true':
-                contextMenu.append(('!!Download [COLOR seablue]Audio!![/COLOR]','XBMC.RunPlugin(%s?url=%s&mode=24&name=%s)'
+                contextMenu.append(('| [COLOR white]Download [COLOR seablue]Audio[/COLOR][COLOR white] |[/COLOR]','XBMC.RunPlugin(%s?url=%s&mode=24&name=%s)'
                                         %(sys.argv[0], urllib.quote_plus(url), urllib.quote_plus(name))))
         elif url.startswith('magnet:?xt='):
             if '&' in url and not '&amp;' in url :
@@ -2637,11 +2637,11 @@ def addLink(url,name,iconimage,fanart,description,genre,date,showcontext,playlis
             mode = '12'
         else:
             mode = '12'
-            contextMenu.append(('[COLOR white]!!Download Currently Playing!![/COLOR]','XBMC.RunPlugin(%s?url=%s&mode=21&name=%s)'
+            contextMenu.append(('[COLOR white]| Download Video |[/COLOR]','XBMC.RunPlugin(%s?url=%s&mode=21&name=%s)'
                                     %(sys.argv[0], urllib.quote_plus(url), urllib.quote_plus(name))))
         if 'plugin://plugin.video.youtube/play/?video_id=' in url:
               yt_audio_url = url.replace('plugin://plugin.video.youtube/play/?video_id=','https://www.youtube.com/watch?v=')
-              contextMenu.append(('!!Download [COLOR blue]Audio!![/COLOR]','XBMC.RunPlugin(%s?url=%s&mode=24&name=%s)'
+              contextMenu.append(('| [COLOR white]Download [COLOR seablue]Audio[/COLOR][COLOR white] |[/COLOR]','XBMC.RunPlugin(%s?url=%s&mode=24&name=%s)'
                                       %(sys.argv[0], urllib.quote_plus(yt_audio_url), urllib.quote_plus(name))))
         u=sys.argv[0]+"?"
         play_list = False
