@@ -110,7 +110,7 @@ def makeRequest(url, headers=None):
 def getSources():
         try:
             if os.path.exists(favorites) == True:
-                addDir('[B][COLOR deepskyblue][ Alive Favorites ][/COLOR][/B]','[B][COLOR deepskyblue][ Alive Favorites ][/COLOR][/B]',4,'http://i.imgur.com/bJXmzXA.png' , os.path.join(home, 'fanart.gif'),FANART,'','','','')
+                addDir('',4,'' , os.path.join(home, 'fanart.gif'),FANART,'','','','')
             if addon.getSetting("browse_xml_database") == "true":
                 addDir('XML Database','http://xbmcplus.xb.funpic.de/www-data/filesystem/',15,icon,FANART,'','','','')
             if addon.getSetting("browse_community") == "true":
@@ -2496,7 +2496,7 @@ def addDir(name,url,mode,iconimage,fanart,description,genre,date,credits,showcon
                 contextMenu.append(('Download','XBMC.RunPlugin(%s?url=%s&mode=9&name=%s)'
                                     %(sys.argv[0], urllib.quote_plus(url), urllib.quote_plus(name))))
             elif showcontext == 'fav':
-                contextMenu.append(('Remove from [B][COLOR lime]Alive.HD[/B][/COLOR] Favorites','XBMC.RunPlugin(%s?mode=6&name=%s)'
+                contextMenu.append(('','XBMC.RunPlugin(%s?mode=6&name=%s)'
                                     %(sys.argv[0], urllib.quote_plus(name))))
             if showcontext == '!!update':
                 fav_params2 = (
@@ -2504,10 +2504,6 @@ def addDir(name,url,mode,iconimage,fanart,description,genre,date,credits,showcon
                     %(sys.argv[0], urllib.quote_plus(reg_url), regexs)
                     )
                 contextMenu.append(('[COLOR yellow]!!update[/COLOR]','XBMC.RunPlugin(%s)' %fav_params2))
-            if not name in FAV:
-                contextMenu.append(('Add to [B][COLOR lime]Alive.HD[/B][/COLOR] Favorites','XBMC.RunPlugin(%s?mode=5&name=%s&url=%s&iconimage=%s&fanart=%s&fav_mode=%s)'
-                         %(sys.argv[0], urllib.quote_plus(name), urllib.quote_plus(url), urllib.quote_plus(iconimage), urllib.quote_plus(fanart), mode)))
-            liz.addContextMenuItems(contextMenu)
         ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
         return ok
 def ytdl_download(url,title,media_type='video'):
@@ -2531,7 +2527,7 @@ def ytdl_download(url,title,media_type='video'):
             info = {'url':xbmc_url,'title':title,'media_type':media_type}
             youtubedl.single_YD('',download=True,dl_info=info)
     else:
-        xbmc.executebuiltin("XBMC.Notification(DOWNLOAD,First Play [COLOR yellow]WHILE playing download[/COLOR] ,10000)")
+        xbmc.executebuiltin("XBMC.Notification(First Play the Video, [COLOR lime]While playing download[/COLOR] ,10000)")
 
 ## Lunatixz PseudoTV feature
 def ascii(string):
@@ -2615,12 +2611,12 @@ def addLink(url,name,iconimage,fanart,description,genre,date,showcontext,playlis
             if 'listrepeat' in regexs:
                 isFolder=True
 #                print 'setting as folder in link'
-            contextMenu.append(('[COLOR white]| Download Video |[/COLOR]','XBMC.RunPlugin(%s?url=%s&mode=21&name=%s)'
+            contextMenu.append(('[B][COLOR lime]| Download Video |[/COLOR][/B]','XBMC.RunPlugin(%s?url=%s&mode=21&name=%s)'
                                     %(sys.argv[0], urllib.quote_plus(url), urllib.quote_plus(name))))
         elif  (any(x in url for x in resolve_url) and  url.startswith('http')) or url.endswith('&mode=19'):
             url=url.replace('&mode=19','')
             mode = '19'
-            contextMenu.append(('[COLOR white]| Download Video |[/COLOR]','XBMC.RunPlugin(%s?url=%s&mode=21&name=%s)'
+            contextMenu.append(('[B][COLOR lime]| Download Video |[/COLOR][/B]','XBMC.RunPlugin(%s?url=%s&mode=21&name=%s)'
                                     %(sys.argv[0], urllib.quote_plus(url), urllib.quote_plus(name))))
         elif url.endswith('&mode=18'):
             url=url.replace('&mode=18','')
@@ -2628,7 +2624,7 @@ def addLink(url,name,iconimage,fanart,description,genre,date,showcontext,playlis
             contextMenu.append(('[COLOR white]!!Download!![/COLOR]','XBMC.RunPlugin(%s?url=%s&mode=23&name=%s)'
                                     %(sys.argv[0], urllib.quote_plus(url), urllib.quote_plus(name))))
             if addon.getSetting('dlaudioonly') == 'true':
-                contextMenu.append(('| [COLOR white]Download [COLOR seablue]Audio[/COLOR][COLOR white] |[/COLOR]','XBMC.RunPlugin(%s?url=%s&mode=24&name=%s)'
+                contextMenu.append(('[B][COLOR blue]| Download Audio |[/COLOR][/B]','XBMC.RunPlugin(%s?url=%s&mode=24&name=%s)'
                                         %(sys.argv[0], urllib.quote_plus(url), urllib.quote_plus(name))))
         elif url.startswith('magnet:?xt='):
             if '&' in url and not '&amp;' in url :
@@ -2637,11 +2633,11 @@ def addLink(url,name,iconimage,fanart,description,genre,date,showcontext,playlis
             mode = '12'
         else:
             mode = '12'
-            contextMenu.append(('[COLOR white]| Download Video |[/COLOR]','XBMC.RunPlugin(%s?url=%s&mode=21&name=%s)'
+            contextMenu.append(('[B][COLOR lime]| Download Video |[/COLOR][/B]','XBMC.RunPlugin(%s?url=%s&mode=21&name=%s)'
                                     %(sys.argv[0], urllib.quote_plus(url), urllib.quote_plus(name))))
         if 'plugin://plugin.video.youtube/play/?video_id=' in url:
               yt_audio_url = url.replace('plugin://plugin.video.youtube/play/?video_id=','https://www.youtube.com/watch?v=')
-              contextMenu.append(('| [COLOR white]Download [COLOR seablue]Audio[/COLOR][COLOR white] |[/COLOR]','XBMC.RunPlugin(%s?url=%s&mode=24&name=%s)'
+              contextMenu.append(('[B][COLOR blue]| Download Audio |[/COLOR][/B]','XBMC.RunPlugin(%s?url=%s&mode=24&name=%s)'
                                       %(sys.argv[0], urllib.quote_plus(yt_audio_url), urllib.quote_plus(name))))
         u=sys.argv[0]+"?"
         play_list = False
@@ -2687,7 +2683,7 @@ def addLink(url,name,iconimage,fanart,description,genre,date,showcontext,playlis
             #contextMenu = []
             if showcontext == 'fav':
                 contextMenu.append(
-                    ('Remove from [B][COLOR lime]Alive.HD[/B][/COLOR] Favorites','XBMC.RunPlugin(%s?mode=6&name=%s)'
+                    ('','XBMC.RunPlugin(%s?mode=6&name=%s)'
                      %(sys.argv[0], urllib.quote_plus(name)))
                      )
             elif not name in FAV:
@@ -2705,7 +2701,6 @@ def addLink(url,name,iconimage,fanart,description,genre,date,showcontext,playlis
                     fav_params += 'playlist='+urllib.quote_plus(str(playlist).replace(',','||'))
                 if regexs:
                     fav_params += "&regexs="+regexs
-                contextMenu.append(('Add to [B][COLOR lime]Alive.HD[/B][/COLOR] Favorites','XBMC.RunPlugin(%s)' %fav_params))
             liz.addContextMenuItems(contextMenu)
         try:
             if not playlist is None:
@@ -3130,7 +3125,7 @@ elif mode==17 or mode==117:
     else:
         url,setresolved = getRegexParsed(regexs, url)
         print repr(url),setresolved,'imhere'
-        if not (regexs and 'notplayable' in regexs):        
+        if not (regexs and 'notplayable' in regexs and not url):        
             if url:
                 if '$PLAYERPROXY$=' in url:
                     url,proxy=url.split('$PLAYERPROXY$=')
