@@ -2151,7 +2151,7 @@ def get_params():
         return param
 
 
-def getFavorites():
+def getFavoritos():
         items = json.loads(open(favorites).read())
         total = len(items)
         for i in items:
@@ -2178,7 +2178,7 @@ def getFavorites():
                 addDir(name,url,i[4],iconimage,fanart,'','','','','fav')
 
 
-def addFavorite(name,url,iconimage,fanart,mode,playlist=None,regexs=None):
+def addFavoritos(name,url,iconimage,fanart,mode,playlist=None,regexs=None):
         favList = []
         try:
             # seems that after
@@ -2186,13 +2186,13 @@ def addFavorite(name,url,iconimage,fanart,mode,playlist=None,regexs=None):
         except:
             pass
         if os.path.exists(favorites)==False:
-            addon_log('Making Favorites File')
+            addon_log('Making Favoritos File')
             favList.append((name,url,iconimage,fanart,mode,playlist,regexs))
             a = open(favorites, "w")
             a.write(json.dumps(favList))
             a.close()
         else:
-            addon_log('Appending Favorites')
+            addon_log('Appending Favoritos')
             a = open(favorites).read()
             data = json.loads(a)
             data.append((name,url,iconimage,fanart,mode))
@@ -2201,7 +2201,7 @@ def addFavorite(name,url,iconimage,fanart,mode,playlist=None,regexs=None):
             b.close()
 
 
-def rmFavorite(name):
+def rmFavoritos(name):
         data = json.loads(open(favorites).read())
         for index in range(len(data)):
             if data[index][0]==name:
@@ -2496,7 +2496,7 @@ def addDir(name,url,mode,iconimage,fanart,description,genre,date,credits,showcon
                 contextMenu.append(('Download','XBMC.RunPlugin(%s?url=%s&mode=9&name=%s)'
                                     %(sys.argv[0], urllib.quote_plus(url), urllib.quote_plus(name))))
             elif showcontext == 'fav':
-                contextMenu.append(('Remover de [B][COLOR lime]PT.DocS.HD[/B][/COLOR] Favoritos','XBMC.RunPlugin(%s?mode=6&name=%s)'
+                contextMenu.append(('','XBMC.RunPlugin(%s?mode=6&name=%s)'
                                     %(sys.argv[0], urllib.quote_plus(name))))
             if showcontext == '!!update':
                 fav_params2 = (
@@ -2504,10 +2504,6 @@ def addDir(name,url,mode,iconimage,fanart,description,genre,date,credits,showcon
                     %(sys.argv[0], urllib.quote_plus(reg_url), regexs)
                     )
                 contextMenu.append(('[COLOR yellow]!!update[/COLOR]','XBMC.RunPlugin(%s)' %fav_params2))
-            if not name in FAV:
-                contextMenu.append(('Adicionar a [B][COLOR lime]PT.DocS.HD[/B][/COLOR] Favoritos','XBMC.RunPlugin(%s?mode=5&name=%s&url=%s&iconimage=%s&fanart=%s&fav_mode=%s)'
-                         %(sys.argv[0], urllib.quote_plus(name), urllib.quote_plus(url), urllib.quote_plus(iconimage), urllib.quote_plus(fanart), mode)))
-            liz.addContextMenuItems(contextMenu)
         ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
         return ok
 def ytdl_download(url,title,media_type='video'):
@@ -2531,7 +2527,7 @@ def ytdl_download(url,title,media_type='video'):
             info = {'url':xbmc_url,'title':title,'media_type':media_type}
             youtubedl.single_YD('',download=True,dl_info=info)
     else:
-        xbmc.executebuiltin("XBMC.Notification([COLOR White]Primeiro assiste ao Video[/COLOR] ,Enquanto assistes faz o download ,10000)")
+        xbmc.executebuiltin("XBMC.Notification(Primeiro assiste ao Video, [COLOR lime]Enquanto assistes faz o download[/COLOR] ,10000)")
 
 ## Lunatixz PseudoTV feature
 def ascii(string):
@@ -2615,12 +2611,12 @@ def addLink(url,name,iconimage,fanart,description,genre,date,showcontext,playlis
             if 'listrepeat' in regexs:
                 isFolder=True
 #                print 'setting as folder in link'
-            contextMenu.append(('[COLOR white]| Faz Download deste Video| [/COLOR]','XBMC.RunPlugin(%s?url=%s&mode=21&name=%s)'
+            contextMenu.append(('[B][COLOR lime]| Faz Download do Video |[/COLOR][/B]','XBMC.RunPlugin(%s?url=%s&mode=21&name=%s)'
                                     %(sys.argv[0], urllib.quote_plus(url), urllib.quote_plus(name))))
         elif  (any(x in url for x in resolve_url) and  url.startswith('http')) or url.endswith('&mode=19'):
             url=url.replace('&mode=19','')
             mode = '19'
-            contextMenu.append(('[COLOR white]| Faz Download do Video |[/COLOR]','XBMC.RunPlugin(%s?url=%s&mode=21&name=%s)'
+            contextMenu.append(('[B][COLOR lime]| Faz Download do Video |[/COLOR][/B]','XBMC.RunPlugin(%s?url=%s&mode=21&name=%s)'
                                     %(sys.argv[0], urllib.quote_plus(url), urllib.quote_plus(name))))
         elif url.endswith('&mode=18'):
             url=url.replace('&mode=18','')
@@ -2628,7 +2624,7 @@ def addLink(url,name,iconimage,fanart,description,genre,date,showcontext,playlis
             contextMenu.append(('[COLOR white]| Download |[/COLOR]','XBMC.RunPlugin(%s?url=%s&mode=23&name=%s)'
                                     %(sys.argv[0], urllib.quote_plus(url), urllib.quote_plus(name))))
             if addon.getSetting('dlaudioonly') == 'true':
-                contextMenu.append(('| [COLOR white]Faz Download [COLOR blue]do Audio [COLOR white]|[/COLOR]','XBMC.RunPlugin(%s?url=%s&mode=24&name=%s)'
+                contextMenu.append(('[B][COLOR blue]| Faz Download do Audio |[/COLOR][/B]','XBMC.RunPlugin(%s?url=%s&mode=24&name=%s)'
                                         %(sys.argv[0], urllib.quote_plus(url), urllib.quote_plus(name))))
         elif url.startswith('magnet:?xt='):
             if '&' in url and not '&amp;' in url :
@@ -2637,11 +2633,11 @@ def addLink(url,name,iconimage,fanart,description,genre,date,showcontext,playlis
             mode = '12'
         else:
             mode = '12'
-            contextMenu.append(('[COLOR white]| Faz Download do Video |[/COLOR]','XBMC.RunPlugin(%s?url=%s&mode=21&name=%s)'
+            contextMenu.append(('[B][COLOR lime]| Faz Download do Video |[/COLOR][/B]','XBMC.RunPlugin(%s?url=%s&mode=21&name=%s)'
                                     %(sys.argv[0], urllib.quote_plus(url), urllib.quote_plus(name))))
         if 'plugin://plugin.video.youtube/play/?video_id=' in url:
               yt_audio_url = url.replace('plugin://plugin.video.youtube/play/?video_id=','https://www.youtube.com/watch?v=')
-              contextMenu.append(('| [COLOR white]Faz Download [COLOR blue]do Audio [COLOR white]|[/COLOR]','XBMC.RunPlugin(%s?url=%s&mode=24&name=%s)'
+              contextMenu.append(('[B][COLOR blue]| Faz Download do Audio |[/COLOR][/B]','XBMC.RunPlugin(%s?url=%s&mode=24&name=%s)'
                                       %(sys.argv[0], urllib.quote_plus(yt_audio_url), urllib.quote_plus(name))))
         u=sys.argv[0]+"?"
         play_list = False
@@ -2687,7 +2683,7 @@ def addLink(url,name,iconimage,fanart,description,genre,date,showcontext,playlis
             #contextMenu = []
             if showcontext == 'fav':
                 contextMenu.append(
-                    ('Remover de [B][COLOR lime]PT.DocS.HD[/B][/COLOR] Favoritos','XBMC.RunPlugin(%s?mode=6&name=%s)'
+                    ('','XBMC.RunPlugin(%s?mode=6&name=%s)'
                      %(sys.argv[0], urllib.quote_plus(name)))
                      )
             elif not name in FAV:
@@ -2705,7 +2701,6 @@ def addLink(url,name,iconimage,fanart,description,genre,date,showcontext,playlis
                     fav_params += 'playlist='+urllib.quote_plus(str(playlist).replace(',','||'))
                 if regexs:
                     fav_params += "&regexs="+regexs
-                contextMenu.append(('Adicionar a [B][COLOR lime]PT.DocS.HD[/B][/COLOR] Favoritos','XBMC.RunPlugin(%s)' %fav_params))
             liz.addContextMenuItems(contextMenu)
         try:
             if not playlist is None:
@@ -2924,12 +2919,12 @@ elif mode==3:
     xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 elif mode==4:
-    addon_log("getFavorites")
-    getFavorites()
+    addon_log("getFavoritos")
+    getFavoritos()
     xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 elif mode==5:
-    addon_log("addFavorite")
+    addon_log("addFavoritos")
     try:
         name = name.split('\\ ')[1]
     except:
@@ -2938,10 +2933,10 @@ elif mode==5:
         name = name.split('  - ')[0]
     except:
         pass
-    addFavorite(name,url,iconimage,fanart,fav_mode)
+    addFavoritos(name,url,iconimage,fanart,fav_mode)
 
 elif mode==6:
-    addon_log("rmFavorite")
+    addon_log("rmFavoritos")
     try:
         name = name.split('\\ ')[1]
     except:
@@ -2950,7 +2945,7 @@ elif mode==6:
         name = name.split('  - ')[0]
     except:
         pass
-    rmFavorite(name)
+    rmFavoritos(name)
 
 elif mode==7:
     addon_log("addSource")
@@ -3130,7 +3125,7 @@ elif mode==17 or mode==117:
     else:
         url,setresolved = getRegexParsed(regexs, url)
         print repr(url),setresolved,'imhere'
-        if not (regexs and 'notplayable' in regexs):        
+        if not (regexs and 'notplayable'  in regexs and not url):        
             if url:
                 if '$PLAYERPROXY$=' in url:
                     url,proxy=url.split('$PLAYERPROXY$=')
