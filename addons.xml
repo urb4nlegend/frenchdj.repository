@@ -79,7 +79,7 @@ Toda a fonte  vem de utilizadores do Youtube.
 
 <addon id="plugin.video.pt.docs.hd"
        name="PT.DocS.HD"
-       version="4.6a"
+       version="4.7"
        provider-name="frenchdj">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
