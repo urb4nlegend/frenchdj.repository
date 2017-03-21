@@ -47,7 +47,7 @@ Plailsts organized by categories and any source comes from Youtube users.
 
 <addon id="plugin.video.jami"
        name="Jami"
-       version="6.0"
+       version="6.1"
        provider-name="frenchdj">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
