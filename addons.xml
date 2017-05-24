@@ -16,7 +16,7 @@
 
 <addon id="plugin.video.alive.hd"
        name="Alive.HD"
-       version="4.8a"
+       version="5.0"
        provider-name="frenchdj">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
@@ -37,7 +37,7 @@
     <provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
-    <summary lang="en">Alive.HD</summary>
+    <summary lang="en">DUAL ADDON</summary>
     <description>Concerts and Djs live performances in HD quality.
 Plailsts organized by categories and any source comes from Youtube users.
 [B][COLOR lime]Advised the latest version of youtube 5.*.*[/B][/COLOR]</description>
