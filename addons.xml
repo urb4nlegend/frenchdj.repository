@@ -47,7 +47,7 @@ Playlists organized by categories and any source comes from Youtube users.
 
 <addon id="plugin.video.documented.hd"
        name="Documented.HD"
-       version="1.0"
+       version="1.1"
        provider-name="frenchdj">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
@@ -68,9 +68,9 @@ Playlists organized by categories and any source comes from Youtube users.
     <provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
-    <summary lang="en">Documented.HD</summary>
-    <description>Documentaries in HD quality.
-Plailsts organized by categories and any source comes from Youtube users.
+    <summary lang="en">Dual Edition Addon</summary>
+    <description>Alternative documentaries in HD quality.
+Playlists organized by categories and any source comes from Youtube users.
 [B][COLOR lime]Advised the latest version of youtube 5.*.*[/B][/COLOR]</description>
     <platform>all</platform>
   </extension>
