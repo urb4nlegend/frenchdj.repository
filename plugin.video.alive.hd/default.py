@@ -22,8 +22,8 @@ import SimpleDownloader as downloader
 import time
 tsdownloader=False
 hlsretry=False
-resolve_url=['180upload.com', 'allmyvideos.net', 'bestreams.net', 'clicknupload.com', 'cloudzilla.to', 'movshare.net', 'novamov.com', 'nowvideo.sx', 'videoweed.es', 'daclips.in', 'datemule.com', 'fastvideo.in', 'faststream.in', 'filehoot.com', 'filenuke.com', 'sharesix.com',  'plus.google.com', 'picasaweb.google.com', 'gorillavid.com', 'gorillavid.in', 'grifthost.com', 'hugefiles.net', 'ipithos.to', 'ishared.eu', 'kingfiles.net', 'mail.ru', 'my.mail.ru', 'videoapi.my.mail.ru', 'mightyupload.com', 'mooshare.biz', 'movdivx.com', 'movpod.net', 'movpod.in', 'movreel.com', 'mrfile.me', 'nosvideo.com', 'openload.io', 'played.to', 'bitshare.com', 'filefactory.com', 'k2s.cc', 'oboom.com', 'rapidgator.net', 'primeshare.tv', 'bitshare.com', 'filefactory.com', 'k2s.cc', 'oboom.com', 'rapidgator.net', 'sharerepo.com', 'stagevu.com', 'streamcloud.eu', 'streamin.to', 'thefile.me', 'thevideo.me', 'tusfiles.net', 'uploadc.com', 'zalaa.com', 'uploadrocket.net', 'uptobox.com', 'v-vids.com', 'veehd.com', 'vidbull.com', 'videomega.tv', 'vidplay.net', 'vidspot.net', 'vidto.me', 'vidzi.tv', 'vimeo.com', 'vk.com', 'vodlocker.com', 'xfileload.com', 'xvidstage.com', 'zettahost.tv']
-g_ignoreSetResolved=['plugin.video.dramasonline','plugin.video.f4mTester','plugin.video.shahidmbcnet','plugin.video.SportsDevil','plugin.stream.vaughnlive.tv','plugin.video.ZemTV-shani']
+resolve_url=[]
+g_ignoreSetResolved=[]
 
 class NoRedirection(urllib2.HTTPErrorProcessor):
    def http_response(self, request, response):
@@ -154,142 +154,6 @@ def getSources():
                         else:
                             getData(ba[0]['url'], ba[0]['fanart'])
         except: traceback.print_exc()
-
-def addSource(url=None):
-        if url is None:
-            if not addon.getSetting("new_file_source") == "":
-               source_url = addon.getSetting('new_file_source').decode('utf-8')
-            elif not addon.getSetting("new_url_source") == "":
-               source_url = addon.getSetting('new_url_source').decode('utf-8')
-        else:
-            source_url = url
-        if source_url == '' or source_url is None:
-            return
-        addon_log('Adding New Source: '+source_url.encode('utf-8'))
-
-        media_info = None
-        #print 'source_url',source_url
-        data = getSoup(source_url)
-                
-        if isinstance(data,BeautifulSOAP):
-            if data.find('channels_info'):
-                media_info = data.channels_info
-            elif data.find('items_info'):
-                media_info = data.items_info
-        if media_info:
-            source_media = {}
-            source_media['url'] = source_url
-            try: source_media['title'] = media_info.title.string
-            except: pass
-            try: source_media['thumbnail'] = media_info.thumbnail.string
-            except: pass
-            try: source_media['fanart'] = media_info.fanart.string
-            except: pass
-            try: source_media['genre'] = media_info.genre.string
-            except: pass
-            try: source_media['description'] = media_info.description.string
-            except: pass
-            try: source_media['date'] = media_info.date.string
-            except: pass
-            try: source_media['credits'] = media_info.credits.string
-            except: pass
-        else:
-            if '/' in source_url:
-                nameStr = source_url.split('/')[-1].split('.')[0]
-            if '\\' in source_url:
-                nameStr = source_url.split('\\')[-1].split('.')[0]
-            if '%' in nameStr:
-                nameStr = urllib.unquote_plus(nameStr)
-            keyboard = xbmc.Keyboard(nameStr,'Displayed Name, Rename?')
-            keyboard.doModal()
-            if (keyboard.isConfirmed() == False):
-                return
-            newStr = keyboard.getText()
-            if len(newStr) == 0:
-                return
-            source_media = {}
-            source_media['title'] = newStr
-            source_media['url'] = source_url
-            source_media['fanart'] = fanart
-
-        if os.path.exists(ab)==False:
-            source_list = []
-            source_list.append(source_media)
-            b = open(ab,"w")
-            b.write(json.dumps(source_list))
-            b.close()
-        else:
-            ba = json.loads(open(ab,"r").read().decode('base64').decode('base64'))
-            ba.append(source_media)
-            b = open(ab,"w")
-            b.write(json.dumps(ba))
-            b.close()
-        addon.setSetting('new_url_source', "")
-        addon.setSetting('new_file_source', "")
-        xbmc.executebuiltin("XBMC.Notification(alive.hd,New source added.,5000,"+icon+")")
-        if not url is None:
-            if 'xbmcplus.xb.funpic.de' in url:
-                xbmc.executebuiltin("XBMC.Container.Update(%s?mode=14,replace)" %sys.argv[0])
-            elif 'community-links' in url:
-                xbmc.executebuiltin("XBMC.Container.Update(%s?mode=10,replace)" %sys.argv[0])
-        else: addon.openSettings()
-
-def rmSource(name):
-        ba = json.loads(open(ab,"r").read())
-        for index in range(len(ba)):
-            if isinstance(ba[index], list):
-                if ba[index][0] == name:
-                    del ba[index]
-                    b = open(ab,"w")
-                    b.write(json.dumps(ba))
-                    b.close()
-                    break
-            else:
-                if ba[index]['title'] == name:
-                    del ba[index]
-                    b = open(ab,"w")
-                    b.write(json.dumps(ba))
-                    b.close()
-                    break
-        xbmc.executebuiltin("XBMC.Container.Refresh")
-
-def get_xml_database(url, browse=False):
-        if url is None:
-            url = 'http://xbmcplus.xb.funpic.de/www-data/filesystem/'
-        soup = BeautifulSoup(makeRequest(url), convertEntities=BeautifulSoup.HTML_ENTITIES)
-        for i in soup('a'):
-            href = i['href']
-            if not href.startswith('?'):
-                name = i.string
-                if name not in ['Parent Directory', 'recycle_bin/']:
-                    if href.endswith('/'):
-                        if browse:
-                            addDir(name,url+href,15,icon,fanart,'','','')
-                        else:
-                            addDir(name,url+href,14,icon,fanart,'','','')
-                    elif href.endswith('.xml'):
-                        if browse:
-                            addDir(name,url+href,1,icon,fanart,'','','','','download')
-                        else:
-                            if os.path.exists(ab)==True:
-                                if name in SOURCES:
-                                    addDir(name+' (in use)',url+href,11,icon,fanart,'','','','','download')
-                                else:
-                                    addDir(name,url+href,11,icon,fanart,'','','','','download')
-                            else:
-                                addDir(name,url+href,11,icon,fanart,'','','','','download')
-
-
-def getCommunitySources(browse=False):
-        url = 'http://community-links.googlecode.com/svn/trunk/'
-        soup = BeautifulSoup(makeRequest(url), convertEntities=BeautifulSoup.HTML_ENTITIES)
-        files = soup('ul')[0]('li')[1:]
-        for i in files:
-            name = i('a')[0]['href']
-            if browse:
-                addDir(name,url+name,1,icon,fanart,'','','','','download')
-            else:
-                addDir(name,url+name,11,icon,fanart,'','','','','download')
 
 def getSoup(url,data=None):
         global viewmode,tsdownloader, hlsretry
@@ -443,123 +307,6 @@ def getData(url,icon, data=None):
             getItems(soup('item'),fanart)
     else:
         parse_m3u(soup)
-# borrow from https://github.com/enen92/P2P-Streams-XBMC/blob/master/plugin.video.p2p-streams/resources/core/livestreams.py
-# This will not go through the getItems functions ( means you must have ready to play url, no regex)
-def parse_m3u(data):
-    content = data.rstrip()
-    match = re.compile(r'#EXTINF:(.+?),(.*?)[\n\r]+([^\r\n]+)').findall(content)
-    total = len(match)
-    print 'tsdownloader',tsdownloader
-#    print 'total m3u links',total
-    for other,channel_name,stream_url in match:
-        
-        if 'tvg-logo' in other:
-            thumbnail = re_me(other,'tvg-logo=[\'"](.*?)[\'"]')
-            if thumbnail:
-                if thumbnail.startswith('http'):
-                    thumbnail = thumbnail
-
-                elif not addon.getSetting('logo-folderPath') == "":
-                    logo_url = addon.getSetting('logo-folderPath')
-                    thumbnail = logo_url + thumbnail
-
-                else:
-                    thumbnail = thumbnail
-            #else:
-
-        else:
-            thumbnail = ''
-        
-        if 'type' in other:
-            mode_type = re_me(other,'type=[\'"](.*?)[\'"]')
-            if mode_type == 'yt-dl':
-                stream_url = stream_url +"&mode=18"
-            elif mode_type == 'regex':
-                url = stream_url.split('&regexs=')
-                #print url[0] getSoup(url,data=None)
-                regexs = parse_regex(getSoup('',data=url[1]))
-
-                addLink(url[0], channel_name,thumbnail,'','','','','',None,regexs,total)
-                continue
-            elif mode_type == 'ftv':
-                stream_url = 'plugin://plugin.video.F.T.V/?name='+urllib.quote(channel_name) +'&url=' +stream_url +'&mode=125&ch_fanart=na'
-        elif tsdownloader and '.ts' in stream_url:
-            stream_url = 'plugin://plugin.video.f4mTester/?url='+urllib.quote_plus(stream_url)+'&amp;streamtype=TSDOWNLOADER&name='+urllib.quote(channel_name)
-        elif hlsretry and '.m3u8' in stream_url:
-            stream_url = 'plugin://plugin.video.f4mTester/?url='+urllib.quote_plus(stream_url)+'&amp;streamtype=HLSRETRY&name='+urllib.quote(channel_name)
-        addLink(stream_url, channel_name,thumbnail,'','','','','',None,'',total)
-def getChannelItems(name,url,fanart):
-        soup = getSoup(url)
-        channel_list = soup.find('channel', attrs={'name' : name.decode('utf-8')})
-        items = channel_list('item')
-        try:
-            fanArt = channel_list('fanart')[0].string
-            if fanArt == None:
-                raise
-        except:
-            fanArt = fanart
-        for channel in channel_list('subchannel'):
-            name = channel('name')[0].string
-            try:
-                name=processPyFunction(name)
-            except: pass
-            try:
-                thumbnail = channel('thumbnail')[0].string
-                if thumbnail == None:
-                    raise
-                thumbnail=processPyFunction(thumbnail)
-            except:
-                thumbnail = ''
-            try:
-                if not channel('fanart'):
-                    if addon.getSetting('use_thumb') == "true":
-                        fanArt = thumbnail
-                else:
-                    fanArt = channel('fanart')[0].string
-                if fanArt == None:
-                    raise
-            except:
-                pass
-            try:
-                desc = channel('info')[0].string
-                if desc == None:
-                    raise
-            except:
-                desc = ''
-
-            try:
-                genre = channel('genre')[0].string
-                if genre == None:
-                    raise
-            except:
-                genre = ''
-
-            try:
-                date = channel('date')[0].string
-                if date == None:
-                    raise
-            except:
-                date = ''
-
-            try:
-                credits = channel('credits')[0].string
-                if credits == None:
-                    raise
-            except:
-                credits = ''
-
-            try:
-                addDir(name.encode('utf-8', 'ignore'),url.encode('utf-8'),3,thumbnail,fanArt,desc,genre,credits,date)
-            except:
-                addon_log('There was a problem adding directory - '+name.encode('utf-8', 'ignore'))
-        getItems(items,fanArt)
-
-
-def getSubChannelItems(name,url,fanart):
-        soup = getSoup(url)
-        channel_list = soup.find('subchannel', attrs={'name' : name.decode('utf-8')})
-        items = channel_list('subitem')
-        getItems(items,fanart)
 
 def getItems(items,fanart,dontLink=False):
         total = len(items)
@@ -618,51 +365,6 @@ def getItems(items,fanart,dontLink=False):
                         if not i.string == None:
                             url.append(i.string)
 
-                elif len(item('sportsdevil')) >0:
-                    for i in item('sportsdevil'):
-                        if not i.string == None:
-                            sportsdevil = 'plugin://plugin.video.SportsDevil/?mode=1&amp;item=catcher%3dstreams%26url=' +i.string
-                            referer = item('referer')[0].string
-                            if referer:
-                                #print 'referer found'
-                                sportsdevil = sportsdevil + '%26referer=' +referer
-                            url.append(sportsdevil)
-                elif len(item('p2p')) >0:
-                    for i in item('p2p'):
-                        if not i.string == None:
-                            if 'sop://' in i.string:
-                                sop = 'plugin://plugin.video.p2p-streams/?mode=2url='+i.string +'&' + 'name='+name
-                                url.append(sop)
-                            else:
-                                p2p='plugin://plugin.video.p2p-streams/?mode=1&url='+i.string +'&' + 'name='+name
-                                url.append(p2p)
-                elif len(item('vaughn')) >0:
-                    for i in item('vaughn'):
-                        if not i.string == None:
-                            vaughn = 'plugin://plugin.stream.vaughnlive.tv/?mode=PlayLiveStream&amp;channel='+i.string
-                            url.append(vaughn)
-                elif len(item('ilive')) >0:
-                    for i in item('ilive'):
-                        if not i.string == None:
-                            if not 'http' in i.string:
-                                ilive = 'plugin://plugin.video.tbh.ilive/?url=http://www.streamlive.to/view/'+i.string+'&amp;link=99&amp;mode=iLivePlay'
-                            else:
-                                ilive = 'plugin://plugin.video.tbh.ilive/?url='+i.string+'&amp;link=99&amp;mode=iLivePlay'
-                elif len(item('yt-dl')) >0:
-                    for i in item('yt-dl'):
-                        if not i.string == None:
-                            ytdl = i.string + '&mode=18'
-                            url.append(ytdl)
-                elif len(item('dm')) >0:
-                    for i in item('dm'):
-                        if not i.string == None:
-                            dm = "plugin://plugin.video.dailymotion_com/?mode=playVideo&url=" + i.string
-                            url.append(dm)
-                elif len(item('dmlive')) >0:
-                    for i in item('dmlive'):
-                        if not i.string == None:
-                            dm = "plugin://plugin.video.dailymotion_com/?mode=playLiveVideo&url=" + i.string
-                            url.append(dm)
                 elif len(item('utube')) >0:
                     for i in item('utube'):
                         if not i.string == None:
@@ -682,32 +384,10 @@ def getItems(items,fanart,dontLink=False):
                                 utube = 'plugin://plugin.video.youtube/user/' + i.string + '/'
                                 isJsonrpc=utube
                         url.append(utube)
-                elif len(item('imdb')) >0:
-                    for i in item('imdb'):
-                        if not i.string == None:
-                            if addon.getSetting('genesisorpulsar') == '0':
-                                imdb = 'plugin://plugin.video.genesis/?action=play&imdb='+i.string
-                            else:
-                                imdb = 'plugin://plugin.video.pulsar/movie/tt'+i.string+'/play'
-                            url.append(imdb)
-                elif len(item('f4m')) >0:
-                        for i in item('f4m'):
-                            if not i.string == None:
-                                if '.f4m' in i.string:
-                                    f4m = 'plugin://plugin.video.f4mTester/?url='+urllib.quote_plus(i.string)
-                                elif '.m3u8' in i.string:
-                                    f4m = 'plugin://plugin.video.f4mTester/?url='+urllib.quote_plus(i.string)+'&amp;streamtype=HLS'
+            
 
-                                else:
-                                    f4m = 'plugin://plugin.video.f4mTester/?url='+urllib.quote_plus(i.string)+'&amp;streamtype=SIMPLE'
-                            url.append(f4m)
-                elif len(item('ftv')) >0:
-                    for i in item('ftv'):
-                        if not i.string == None:
-                            ftv = 'plugin://plugin.video.F.T.V/?name='+urllib.quote(name) +'&url=' +i.string +'&mode=125&ch_fanart=na'
-                        url.append(ftv)
                 elif len(item('urlsolve')) >0:
-                    
+                   
                     for i in item('urlsolve'):
                         if not i.string == None:
                             resolver = i.string +'&mode=19'
@@ -955,17 +635,7 @@ def parse_regex(reg_item):
                 except:
                     regexs = None
                     addon_log('regex Error: '+name.encode('utf-8', 'ignore'))
-#copies from lamda's implementation
-def get_ustream(url):
-    try:
-        for i in range(1, 51):
-            result = getUrl(url)
-            if "EXT-X-STREAM-INF" in result: return url
-            if not "EXTM3U" in result: return
-            xbmc.sleep(2000)
-        return
-    except:
-        return
+
 
 def getRegexParsed(regexs, url,cookieJar=None,forCookieJarOnly=False,recursiveCall=False,cachedPages={}, rawPost=False, cookie_jar_file=None):#0,1,2 = URL, regexOnly, CookieJarOnly
         if not recursiveCall:
@@ -1460,66 +1130,6 @@ def playmediawithproxy(media_url, name, iconImage,proxyip,port, proxyuser=None, 
     return ''
 
 
-def get_saw_rtmp(page_value, referer=None):
-    if referer:
-        referer=[('Referer',referer)]
-    if page_value.startswith("http"):
-        page_url=page_value
-        page_value= getUrl(page_value,headers=referer)
-
-    str_pattern="(eval\(function\(p,a,c,k,e,(?:r|d).*)"
-
-    reg_res=re.compile(str_pattern).findall(page_value)
-    r=""
-    if reg_res and len(reg_res)>0:
-        for v in reg_res:
-            r1=get_unpacked(v)
-            r2=re_me(r1,'\'(.*?)\'')
-            if 'unescape' in r1:
-                r1=urllib.unquote(r2)
-            r+=r1+'\n'
-#        print 'final value is ',r
-
-        page_url=re_me(r,'src="(.*?)"')
-
-        page_value= getUrl(page_url,headers=referer)
-
-    #print page_value
-
-    rtmp=re_me(page_value,'streamer\'.*?\'(.*?)\'\)')
-    playpath=re_me(page_value,'file\',\s\'(.*?)\'')
-
-
-    return rtmp+' playpath='+playpath +' pageUrl='+page_url
-
-def get_leton_rtmp(page_value, referer=None):
-    if referer:
-        referer=[('Referer',referer)]
-    if page_value.startswith("http"):
-        page_value= getUrl(page_value,headers=referer)
-    str_pattern="var a = (.*?);\s*var b = (.*?);\s*var c = (.*?);\s*var d = (.*?);\s*var f = (.*?);\s*var v_part = '(.*?)';"
-    reg_res=re.compile(str_pattern).findall(page_value)[0]
-
-    a,b,c,d,f,v=(reg_res)
-    f=int(f)
-    a=int(a)/f
-    b=int(b)/f
-    c=int(c)/f
-    d=int(d)/f
-
-    ret= 'rtmp://' + str(a) + '.' + str(b) + '.' + str(c) + '.' + str(d) + v;
-    return ret
-
-def createM3uForDash(url,useragent=None):
-    str='#EXTM3U'
-    str+='\n#EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=361816'
-    str+='\n'+url+'&bytes=0-200000'#+'|User-Agent='+useragent
-    ab = os.path.join(profile, 'testfile.m3u')
-    str+='\n'
-    SaveToFile(ab,str)
-    #return 'C:/Users/shani/Downloads/test.m3u8'
-    return ab
-
 def SaveToFile(file_name,page_data,append=False):
     if append:
         f = open(file_name, 'a')
@@ -1614,172 +1224,6 @@ def revist_dag(page_data):
     return final_url
 
 
-def get_unwise( str_eval):
-    page_value=""
-    try:
-        ss="w,i,s,e=("+str_eval+')'
-        exec (ss)
-        page_value=unwise_func(w,i,s,e)
-    except: traceback.print_exc(file=sys.stdout)
-    #print 'unpacked',page_value
-    return page_value
-
-def unwise_func( w, i, s, e):
-    lIll = 0;
-    ll1I = 0;
-    Il1l = 0;
-    ll1l = [];
-    l1lI = [];
-    while True:
-        if (lIll < 5):
-            l1lI.append(w[lIll])
-        elif (lIll < len(w)):
-            ll1l.append(w[lIll]);
-        lIll+=1;
-        if (ll1I < 5):
-            l1lI.append(i[ll1I])
-        elif (ll1I < len(i)):
-            ll1l.append(i[ll1I])
-        ll1I+=1;
-        if (Il1l < 5):
-            l1lI.append(s[Il1l])
-        elif (Il1l < len(s)):
-            ll1l.append(s[Il1l]);
-        Il1l+=1;
-        if (len(w) + len(i) + len(s) + len(e) == len(ll1l) + len(l1lI) + len(e)):
-            break;
-
-    lI1l = ''.join(ll1l)#.join('');
-    I1lI = ''.join(l1lI)#.join('');
-    ll1I = 0;
-    l1ll = [];
-    for lIll in range(0,len(ll1l),2):
-        #print 'array i',lIll,len(ll1l)
-        ll11 = -1;
-        if ( ord(I1lI[ll1I]) % 2):
-            ll11 = 1;
-        #print 'val is ', lI1l[lIll: lIll+2]
-        l1ll.append(chr(    int(lI1l[lIll: lIll+2], 36) - ll11));
-        ll1I+=1;
-        if (ll1I >= len(l1lI)):
-            ll1I = 0;
-    ret=''.join(l1ll)
-    if 'eval(function(w,i,s,e)' in ret:
-#        print 'STILL GOing'
-        ret=re.compile('eval\(function\(w,i,s,e\).*}\((.*?)\)').findall(ret)[0]
-        return get_unwise(ret)
-    else:
-#        print 'FINISHED'
-        return ret
-
-def get_unpacked( page_value, regex_for_text='', iterations=1, total_iteration=1):
-    try:
-        reg_data=None
-        if page_value.startswith("http"):
-            page_value= getUrl(page_value)
-#        print 'page_value',page_value
-        if regex_for_text and len(regex_for_text)>0:
-            try:
-                page_value=re.compile(regex_for_text).findall(page_value)[0] #get the js variable
-            except: return 'NOTPACKED'
-
-        page_value=unpack(page_value,iterations,total_iteration)
-    except:
-        page_value='UNPACKEDFAILED'
-        traceback.print_exc(file=sys.stdout)
-#    print 'unpacked',page_value
-    if 'sav1live.tv' in page_value:
-        page_value=page_value.replace('sav1live.tv','sawlive.tv') #quick fix some bug somewhere
-#        print 'sav1 unpacked',page_value
-    return page_value
-
-def unpack(sJavascript,iteration=1, totaliterations=2  ):
-#    print 'iteration',iteration
-    if sJavascript.startswith('var _0xcb8a='):
-        aSplit=sJavascript.split('var _0xcb8a=')
-        ss="myarray="+aSplit[1].split("eval(")[0]
-        exec(ss)
-        a1=62
-        c1=int(aSplit[1].split(",62,")[1].split(',')[0])
-        p1=myarray[0]
-        k1=myarray[3]
-        with open('temp file'+str(iteration)+'.js', "wb") as filewriter:
-            filewriter.write(str(k1))
-        #aa=1/0
-    else:
-
-        if "rn p}('" in sJavascript:
-            aSplit = sJavascript.split("rn p}('")
-        else:
-            aSplit = sJavascript.split("rn A}('")
-#        print aSplit
-
-        p1,a1,c1,k1=('','0','0','')
-
-        ss="p1,a1,c1,k1=('"+aSplit[1].split(".spli")[0]+')'
-        exec(ss)
-    k1=k1.split('|')
-    aSplit = aSplit[1].split("))'")
-#    print ' p array is ',len(aSplit)
-#   print len(aSplit )
-
-    #p=str(aSplit[0]+'))')#.replace("\\","")#.replace('\\\\','\\')
-
-    #print aSplit[1]
-    #aSplit = aSplit[1].split(",")
-    #print aSplit[0]
-    #a = int(aSplit[1])
-    #c = int(aSplit[2])
-    #k = aSplit[3].split(".")[0].replace("'", '').split('|')
-    #a=int(a)
-    #c=int(c)
-
-    #p=p.replace('\\', '')
-#    print 'p val is ',p[0:100],'............',p[-100:],len(p)
-#    print 'p1 val is ',p1[0:100],'............',p1[-100:],len(p1)
-
-    #print a,a1
-    #print c,a1
-    #print 'k val is ',k[-10:],len(k)
-#    print 'k1 val is ',k1[-10:],len(k1)
-    e = ''
-    d = ''#32823
-
-    #sUnpacked = str(__unpack(p, a, c, k, e, d))
-    sUnpacked1 = str(__unpack(p1, a1, c1, k1, e, d,iteration))
-
-    #print sUnpacked[:200]+'....'+sUnpacked[-100:], len(sUnpacked)
-#    print sUnpacked1[:200]+'....'+sUnpacked1[-100:], len(sUnpacked1)
-
-    #exec('sUnpacked1="'+sUnpacked1+'"')
-    if iteration>=totaliterations:
-#        print 'final res',sUnpacked1[:200]+'....'+sUnpacked1[-100:], len(sUnpacked1)
-        return sUnpacked1#.replace('\\\\', '\\')
-    else:
-#        print 'final res for this iteration is',iteration
-        return unpack(sUnpacked1,iteration+1)#.replace('\\', ''),iteration)#.replace('\\', '');#unpack(sUnpacked.replace('\\', ''))
-
-def __unpack(p, a, c, k, e, d, iteration,v=1):
-
-    #with open('before file'+str(iteration)+'.js', "wb") as filewriter:
-    #    filewriter.write(str(p))
-    while (c >= 1):
-        c = c -1
-        if (k[c]):
-            aa=str(__itoaNew(c, a))
-            if v==1:
-                p=re.sub('\\b' + aa +'\\b', k[c], p)# THIS IS Bloody slow!
-            else:
-                p=findAndReplaceWord(p,aa,k[c])
-
-            #p=findAndReplaceWord(p,aa,k[c])
-
-
-    #with open('after file'+str(iteration)+'.js', "wb") as filewriter:
-    #    filewriter.write(str(p))
-    return p
-
-#
 #function equalavent to re.sub('\\b' + aa +'\\b', k[c], p)
 def findAndReplaceWord(source_str, word_to_find,replace_with):
     splits=None
@@ -1809,21 +1253,6 @@ def findAndReplaceWord(source_str, word_to_find,replace_with):
         #aaaa=1/0
         source_str=''.join(new_string)
     return source_str
-
-def __itoa(num, radix):
-#    print 'num red',num, radix
-    result = ""
-    if num==0: return '0'
-    while num > 0:
-        result = "0123456789abcdefghijklmnopqrstuvwxyz"[num % radix] + result
-        num /= radix
-    return result
-
-def __itoaNew(cc, a):
-    aa="" if cc < a else __itoaNew(int(cc / a),a)
-    cc = (cc % a)
-    bb=chr(cc + 29) if cc> 35 else str(__itoa(cc,36))
-    return aa+bb
 
 
 def getCookiesString(cookieJar):
@@ -1857,46 +1286,6 @@ def getCookieJar(COOKIEFILE):
         cookieJar = cookielib.LWPCookieJar()
 
     return cookieJar
-
-def doEval(fun_call,page_data,Cookie_Jar,m):
-    ret_val=''
-    #print fun_call
-    if functions_dir not in sys.path:
-        sys.path.append(functions_dir)
-
-#    print fun_call
-    try:
-        py_file='import '+fun_call.split('.')[0]
-#        print py_file,sys.path
-        exec( py_file)
-#        print 'done'
-    except:
-        #print 'error in import'
-        traceback.print_exc(file=sys.stdout)
-#    print 'ret_val='+fun_call
-    exec ('ret_val='+fun_call)
-#    print ret_val
-    #exec('ret_val=1+1')
-    try:
-        return str(ret_val)
-    except: return ret_val
-
-def doEvalFunction(fun_call,page_data,Cookie_Jar,m):
-#    print 'doEvalFunction'
-    ret_val=''
-    if functions_dir not in sys.path:
-        sys.path.append(functions_dir)
-        
-    f=open(os.path.join(functions_dir,'LSProdynamicCode.py'),"wb")
-    f.write("# -*- coding: utf-8 -*-\n")
-    f.write(fun_call.encode("utf-8"));
-    
-    f.close()
-    import LSProdynamicCode
-    ret_val=LSProdynamicCode.GetLSProData(page_data,Cookie_Jar,m)
-    try:
-        return str(ret_val)
-    except: return ret_val
 
 
 def getGoogleRecaptchaResponse(captchakey, cj,type=1): #1 for get, 2 for post, 3 for rawpost
@@ -1994,107 +1383,7 @@ def javascriptUnEscape(str):
             str=str.replace(j ,urllib.unquote(j))
     return str
 
-iid=0
-def askCaptcha(m,html_page, cookieJar):
-    global iid
-    iid+=1
-    expre= m['expres']
-    page_url = m['page']
-    captcha_regex=re.compile('\$LiveStreamCaptcha\[([^\]]*)\]').findall(expre)[0]
 
-    captcha_url=re.compile(captcha_regex).findall(html_page)[0]
-#    print expre,captcha_regex,captcha_url
-    if not captcha_url.startswith("http"):
-        page_='http://'+"".join(page_url.split('/')[2:3])
-        if captcha_url.startswith("/"):
-            captcha_url=page_+captcha_url
-        else:
-            captcha_url=page_+'/'+captcha_url
-
-    local_captcha = os.path.join(profile, str(iid)+"captcha.jpg" )
-    localFile = open(local_captcha, "wb")
-#    print ' c capurl',captcha_url
-    req = urllib2.Request(captcha_url)
-    req.add_header('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:14.0) Gecko/20100101 Firefox/14.0.1')
-    if 'referer' in m:
-        req.add_header('Referer', m['referer'])
-    if 'agent' in m:
-        req.add_header('User-agent', m['agent'])
-    if 'setcookie' in m:
-#        print 'adding cookie',m['setcookie']
-        req.add_header('Cookie', m['setcookie'])
-
-    #cookie_handler = urllib2.HTTPCookieProcessor(cookieJar)
-    #opener = urllib2.build_opener(cookie_handler, urllib2.HTTPBasicAuthHandler(), urllib2.HTTPHandler())
-    #opener = urllib2.install_opener(opener)
-    urllib2.urlopen(req)
-    response = urllib2.urlopen(req)
-
-    localFile.write(response.read())
-    response.close()
-    localFile.close()
-    solver = InputWindow(captcha=local_captcha)
-    solution = solver.get()
-    return solution
-
-def askCaptchaNew(imageregex,html_page,cookieJar,m):
-    global iid
-    iid+=1
-
-
-    if not imageregex=='':
-        if html_page.startswith("http"):
-            page_=getUrl(html_page,cookieJar=cookieJar)
-        else:
-            page_=html_page
-        captcha_url=re.compile(imageregex).findall(html_page)[0]
-    else:
-        captcha_url=html_page
-        if 'oneplay.tv/embed' in html_page:
-            import oneplay
-            page_=getUrl(html_page,cookieJar=cookieJar)
-            captcha_url=oneplay.getCaptchaUrl(page_)
-
-    local_captcha = os.path.join(profile, str(iid)+"captcha.jpg" )
-    localFile = open(local_captcha, "wb")
-#    print ' c capurl',captcha_url
-    req = urllib2.Request(captcha_url)
-    req.add_header('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:14.0) Gecko/20100101 Firefox/14.0.1')
-    if 'referer' in m:
-        req.add_header('Referer', m['referer'])
-    if 'agent' in m:
-        req.add_header('User-agent', m['agent'])
-    if 'accept' in m:
-        req.add_header('Accept', m['accept'])
-    if 'setcookie' in m:
-#        print 'adding cookie',m['setcookie']
-        req.add_header('Cookie', m['setcookie'])
-
-    #cookie_handler = urllib2.HTTPCookieProcessor(cookieJar)
-    #opener = urllib2.build_opener(cookie_handler, urllib2.HTTPBasicAuthHandler(), urllib2.HTTPHandler())
-    #opener = urllib2.install_opener(opener)
-    #urllib2.urlopen(req)
-    response = urllib2.urlopen(req)
-
-    localFile.write(response.read())
-    response.close()
-    localFile.close()
-    solver = InputWindow(captcha=local_captcha)
-    solution = solver.get()
-    return solution
-
-#########################################################
-# Function  : GUIEditExportName                         #
-#########################################################
-# Parameter :                                           #
-#                                                       #
-# name        sugested name for export                  #
-#                                                       # 
-# Returns   :                                           #
-#                                                       #
-# name        name of export excluding any extension    #
-#                                                       #
-#########################################################
 def TakeInput(name, headname):
 
 
@@ -2431,21 +1720,9 @@ def download_file(name, url):
 
 def _search(url,name):
    # print url,name
-    pluginsearchurls = ['plugin://plugin.video.genesis/?action=shows_search',\
-             'plugin://plugin.video.genesis/?action=movies_search',\
-             'plugin://plugin.video.salts/?mode=search&amp;section=Movies',\
-             'plugin://plugin.video.salts/?mode=search&amp;section=TV',\
-             'plugin://plugin.video.muchmovies.hd/?action=movies_search',\
-             'plugin://plugin.video.viooz.co/?action=root_search',\
-             'plugin://plugin.video.ororotv/?action=shows_search',\
-             'plugin://plugin.video.yifymovies.hd/?action=movies_search',\
-             'plugin://plugin.video.cartoonhdtwo/?description&amp;fanart&amp;iconimage&amp;mode=3&amp;name=Search&amp;url=url',\
-             'plugin://plugin.video.youtube/kodion/search/list/',\
-             'plugin://plugin.video.dailymotion_com/?mode=search&amp;url',\
-             'plugin://plugin.video.vimeo/kodion/search/list/'\
+    pluginsearchurls = ['plugin://plugin.video.youtube/kodion/search/list/',\
              ]
-    names = ['Gensis TV','Genesis Movie','Salt movie','salt TV','Muchmovies','viooz','ORoroTV',\
-             'Yifymovies','cartoonHD','Youtube','DailyMotion','Vimeo']
+    names = ['Youtube']
     dialog = xbmcgui.Dialog()
     index = dialog.select('Choose a video source', names)
 
@@ -2527,7 +1804,7 @@ def ytdl_download(url,title,media_type='video'):
             info = {'url':xbmc_url,'title':title,'media_type':media_type}
             youtubedl.single_YD('',download=True,dl_info=info)
     else:
-        xbmc.executebuiltin("XBMC.Notification(First Play the Video, [COLOR lime]While playing download[/COLOR] ,10000)")
+        xbmc.executebuiltin("XBMC.Notification(First Play The Video, [COLOR lime]While playing download[/COLOR] ,10000)")
 
 ## Lunatixz PseudoTV feature
 def ascii(string):
@@ -2626,11 +1903,6 @@ def addLink(url,name,iconimage,fanart,description,genre,date,showcontext,playlis
             if addon.getSetting('dlaudioonly') == 'true':
                 contextMenu.append(('[B][COLOR blue]| Download Audio |[/COLOR][/B]','XBMC.RunPlugin(%s?url=%s&mode=24&name=%s)'
                                         %(sys.argv[0], urllib.quote_plus(url), urllib.quote_plus(name))))
-        elif url.startswith('magnet:?xt='):
-            if '&' in url and not '&amp;' in url :
-                url = url.replace('&','&amp;')
-            url = 'plugin://plugin.video.pulsar/play?uri=' + url
-            mode = '12'
         else:
             mode = '12'
             contextMenu.append(('[B][COLOR lime]| Download Video |[/COLOR][/B]','XBMC.RunPlugin(%s?url=%s&mode=21&name=%s)'
@@ -2745,33 +2017,6 @@ def playsetresolved(url,name,iconimage,setresolved=True,reg=None):
         xbmc.executebuiltin('XBMC.RunPlugin('+url+')')
 
 
-## Thanks to daschacka, an epg scraper for http://i.teleboy.ch/programm/station_select.php
-##  http://forum.xbmc.org/post.php?p=936228&postcount=1076
-def getepg(link):
-        url=urllib.urlopen(link)
-        source=url.read()
-        url.close()
-        source2 = source.split("Jetzt")
-        source3 = source2[1].split('programm/detail.php?const_id=')
-        sourceuhrzeit = source3[1].split('<br /><a href="/')
-        nowtime = sourceuhrzeit[0][40:len(sourceuhrzeit[0])]
-        sourcetitle = source3[2].split("</a></p></div>")
-        nowtitle = sourcetitle[0][17:len(sourcetitle[0])]
-        nowtitle = nowtitle.encode('utf-8')
-        return "  - "+nowtitle+" - "+nowtime
-
-
-def get_epg(url, regex):
-        data = makeRequest(url)
-        try:
-            item = re.findall(regex, data)[0]
-            return item
-        except:
-            addon_log('regex failed')
-            addon_log(regex)
-            return
-
-    
 ##not a generic implemenation as it needs to convert            
 def d2x(d, root="root",nested=0):
 
@@ -2947,25 +2192,9 @@ elif mode==6:
         pass
     rmFavorite(name)
 
-elif mode==7:
-    addon_log("addSource")
-    addSource(url)
-
-elif mode==8:
-    addon_log("rmSource")
-    rmSource(name)
-
 elif mode==9:
     addon_log("download_file")
     download_file(name, url)
-
-elif mode==10:
-    addon_log("getCommunitySources")
-    getCommunitySources()
-
-elif mode==11:
-    addon_log("addSource")
-    addSource(url)
 
 elif mode==12:
     addon_log("setResolvedUrl")
@@ -2987,21 +2216,6 @@ elif mode==12:
 elif mode==13:
     addon_log("play_playlist")
     play_playlist(name, playlist)
-
-elif mode==14:
-    addon_log("get_xml_database")
-    get_xml_database(url)
-    xbmcplugin.endOfDirectory(int(sys.argv[1]))
-
-elif mode==15:
-    addon_log("browse_xml_database")
-    get_xml_database(url, True)
-    xbmcplugin.endOfDirectory(int(sys.argv[1]))
-
-elif mode==16:
-    addon_log("browse_community")
-    getCommunitySources(url,browse=True)
-    xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 elif mode==17 or mode==117:
     addon_log("getRegexParsed")
@@ -3152,12 +2366,9 @@ elif mode==18:
     try:
         import youtubedl
     except Exception:
-        xbmc.executebuiltin("XBMC.Notification(Alive.HD,Please [COLOR yellow]install Youtube-dl[/COLOR] module ,10000,"")")
+        xbmc.executebuiltin("XBMC.Notification(Alive.HD,Please [COLOR yellow]install Youtube-dl[/COLOR] module ,15000,"")")
     stream_url=youtubedl.single_YD(url)
     playsetresolved(stream_url,name,iconimage)
-elif mode==19:
-    addon_log("Genesiscommonresolvers")
-    playsetresolved (urlsolver(url),name,iconimage,True)
 
 elif mode==21:
     addon_log("download current file using youtube-dl service")
@@ -3168,28 +2379,6 @@ elif mode==23:
 elif mode==24:
     addon_log("Audio only youtube download")
     ytdl_download(url,name,'audio')
-elif mode==25:
-    addon_log("Searchin Other plugins")
-    _search(url,name)
-    xbmcplugin.endOfDirectory(int(sys.argv[1]))
-elif mode==55:
-    addon_log("enabled lock")
-    parentalblockedpin =addon.getSetting('parentalblockedpin')
-    keyboard = xbmc.Keyboard('','Enter Pin')
-    keyboard.doModal()
-    if not (keyboard.isConfirmed() == False):
-        newStr = keyboard.getText()
-        if newStr==parentalblockedpin:
-            addon.setSetting('parentalblocked', "false")
-            xbmc.executebuiltin("XBMC.Notification(Alive.HD,Parental Block Disabled,5000,"+icon+")")
-        else:
-            xbmc.executebuiltin("XBMC.Notification(Alive.HD,Wrong Pin??,5000,"+icon+")")
-    xbmcplugin.endOfDirectory(int(sys.argv[1]))
-elif mode==56:
-    addon_log("disable lock")
-    addon.setSetting('parentalblocked', "true")
-    xbmc.executebuiltin("XBMC.Notification(Alive.HD,Parental block enabled,5000,"+icon+")")
-    xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 elif mode==53:
     addon_log("Requesting JSON-RPC Items")
