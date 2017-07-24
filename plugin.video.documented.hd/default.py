@@ -69,8 +69,7 @@ else: SOURCES = []
 
 def addon_log(string):
     if debug == 'true':
-        xbmc.log("[addon.adocumented.hd-%s]: %s" %(addon_version, string))
-
+        xbmc.log("[addon.documented.hd-%s]: %s" %(addon_version, string))
 
 def makeRequest(url, headers=None):
         try:
@@ -101,11 +100,11 @@ def makeRequest(url, headers=None):
             addon_log('URL: '+url)
             if hasattr(e, 'code'):
                 addon_log('We failed with error code - %s.' % e.code)
-                xbmc.executebuiltin("XBMC.Notification(Documented.HD,We failed with error code - "+str(e.code)+",10000,"+icon+")")
+                xbmc.executebuiltin("XBMC.Notification(documented.hd,We failed with error code - "+str(e.code)+",10000,"+icon+")")
             elif hasattr(e, 'reason'):
                 addon_log('We failed to reach a server.')
                 addon_log('Reason: %s' %e.reason)
-                xbmc.executebuiltin("XBMC.Notification(Documented.HD,We failed to reach a server. - "+str(e.reason)+",10000,"+icon+")")
+                xbmc.executebuiltin("XBMC.Notification(documented.hd,We failed to reach a server. - "+str(e.reason)+",10000,"+icon+")")
 
 def getSources():
         try:
@@ -154,7 +153,6 @@ def getSources():
                         else:
                             getData(ba[0]['url'], ba[0]['fanart'])
         except: traceback.print_exc()
-
 
 def getSoup(url,data=None):
         global viewmode,tsdownloader, hlsretry
@@ -232,6 +230,41 @@ def getData(url,icon, data=None):
     #print type(soup)
     if isinstance(soup,BeautifulSOAP):
     #print 'xxxxxxxxxxsoup',soup
+    
+        if len(soup('search')) > 0:
+            search = soup('search')
+            for sear in search:
+
+                linkedUrl =  sear('externallink')[0].string
+
+                name = sear('name')[0].string
+                try:
+                    name=processPyFunction(name)
+                except: pass                
+                thumbnail = sear('thumbnail')[0].string
+                if thumbnail == None:
+                    thumbnail = ''
+                thumbnail=processPyFunction(thumbnail)
+                try:
+                    if not sear('fanart'):
+                        if addon.getSetting('use_thumb') == "true":
+                            fanArt = thumbnail
+                        else:
+                            fanArt = fanart
+                    else:
+                        fanArt = sear('fanart')[0].string
+                    if fanArt == None:
+                        raise
+                except:
+                    fanArt = fanart
+
+                try:
+                    addDir(name.encode('utf-8'),linkedUrl.encode('utf-8'),54,thumbnail,fanArt,'','','',None,'source')
+                except:
+                    addon_log('There was a problem adding directory from getData(): '+name.encode('utf-8', 'ignore'))
+        else:
+            addon_log('No Search: getItems')
+
         if len(soup('channels')) > 0 and addon.getSetting('donotshowbychannels') == 'false':
             channels = soup('channel')
             for channel in channels:
@@ -308,7 +341,226 @@ def getData(url,icon, data=None):
             getItems(soup('item'),fanart)
     else:
         parse_m3u(soup)
+        
+def getSearchData(url,icon, data=None):
 
+    keyboard = xbmc.Keyboard()
+    keyboard.setHeading("Documented.HD Search")
+    keyboard.setDefault('')
+    keyboard.doModal()
+    if keyboard.isConfirmed():
+        term =  keyboard.getText()
+        term = term.replace(' ','').lower()
+    else:
+        xbmcgui.Dialog().ok('Documented.HD', 'Blank Searches are not allowed.')
+        quit()
+    fanart=''
+    dontLink=False
+    os.path.join(home, 'resources', 'fanart.gif')
+    import checkbad
+    checkbad.do_block_check(False)
+    soup = getSoup(url,data)
+    #print type(soup)
+    if isinstance(soup,BeautifulSOAP):
+    #print 'xxxxxxxxxxsoup',soup
+    
+        if len(soup('link')) > 0:
+            main_item = soup('item')
+            
+            for ite in main_item:
+                sear = ite('link')[0].string
+                soup = getSoup(sear,data)
+                items = soup('item')        
+                total = len(items)
+                
+                add_playlist = addon.getSetting('add_playlist')
+                ask_playlist_items =addon.getSetting('ask_playlist_items')
+                use_thumb = addon.getSetting('use_thumb')
+                parentalblock =addon.getSetting('parentalblocked')
+                parentalblock= parentalblock=="true"
+                for item in items:
+                    try:
+
+                        isXMLSource=False
+                        isJsonrpc = False
+                        
+                        applyblock='false'
+                        try:
+                            applyblock = item('parentalblock')[0].string
+                        except:
+                            addon_log('parentalblock Error')
+                            applyblock = ''
+                        if applyblock=='true' and parentalblock: continue
+                            
+                        try:
+                            name = item('title')[0].string
+                            if name is None:
+                                name = 'unknown?'
+                            try:
+                                name=processPyFunction(name)
+                            except: pass
+                            
+                        except:
+                            addon_log('Name Error')
+                            name = ''
+
+                        check_name = re.sub('\[.+?\]','',name)
+                        if term in check_name.replace(' ','').lower():
+
+                            try:
+                                if item('epg'):
+                                    if item.epg_url:
+                                        addon_log('Get EPG Regex')
+                                        epg_url = item.epg_url.string
+                                        epg_regex = item.epg_regex.string
+                                        epg_name = get_epg(epg_url, epg_regex)
+                                        if epg_name:
+                                            name += ' - ' + epg_name
+                                    elif item('epg')[0].string > 1:
+                                        name += getepg(item('epg')[0].string)
+                                else:
+                                    pass
+                            except:
+                                addon_log('EPG Error')
+                            url = []
+                            if len(item('link')) >0:
+                                #print 'item link', item('link')
+
+                                for i in item('link'):
+                                    if not i.string == None:
+                                        url.append(i.string)
+
+                            elif len(item('utube')) >0:
+                                for i in item('utube'):
+                                    if not i.string == None:
+                                        if ' ' in i.string :
+                                            utube = 'plugin://plugin.video.youtube/search/?q='+ urllib.quote_plus(i.string)
+                                            isJsonrpc=utube
+                                        elif len(i.string) == 11:
+                                            utube = 'plugin://plugin.video.youtube/play/?video_id='+ i.string
+                                        elif (i.string.startswith('PL') and not '&order=' in i.string) or i.string.startswith('UU'):
+                                            utube = 'plugin://plugin.video.youtube/play/?&order=default&playlist_id=' + i.string
+                                        elif i.string.startswith('PL') or i.string.startswith('UU'):
+                                            utube = 'plugin://plugin.video.youtube/play/?playlist_id=' + i.string
+                                        elif i.string.startswith('UC') and len(i.string) > 12:
+                                            utube = 'plugin://plugin.video.youtube/channel/' + i.string + '/'
+                                            isJsonrpc=utube
+                                        elif not i.string.startswith('UC') and not (i.string.startswith('PL'))  :
+                                            utube = 'plugin://plugin.video.youtube/user/' + i.string + '/'
+                                            isJsonrpc=utube
+                                    url.append(utube)
+                        
+
+                            elif len(item('urlsolve')) >0:
+                               
+                                for i in item('urlsolve'):
+                                    if not i.string == None:
+                                        resolver = i.string +'&mode=19'
+                                        url.append(resolver)
+                            if len(url) < 1:
+                                raise
+
+                            try:
+                                isXMLSource = item('externallink')[0].string
+                            except: pass
+
+                            if isXMLSource:
+                                ext_url=[isXMLSource]
+                                isXMLSource=True
+                            else:
+                                isXMLSource=False
+                            try:
+                                isJsonrpc = item('jsonrpc')[0].string
+                            except: pass
+                            if isJsonrpc:
+                                ext_url=[isJsonrpc]
+                                isJsonrpc=True
+                            else:
+                                isJsonrpc=False
+                            try:
+                                thumbnail = item('thumbnail')[0].string
+                                if thumbnail == None:
+                                    raise
+                                thumbnail=processPyFunction(thumbnail)
+                            except:
+                                thumbnail = ''
+                            try:
+                                if not item('fanart'):
+                                    if addon.getSetting('use_thumb') == "true":
+                                        fanArt = thumbnail
+                                    else:
+                                        fanArt = fanart
+                                else:
+                                    fanArt = item('fanart')[0].string
+                                if fanArt == None:
+                                    raise
+                            except:
+                                fanArt = fanart
+                            try:
+                                desc = item('info')[0].string
+                                if desc == None:
+                                    raise
+                            except:
+                                desc = ''
+
+                            try:
+                                genre = item('genre')[0].string
+                                if genre == None:
+                                    raise
+                            except:
+                                genre = ''
+
+                            try:
+                                date = item('date')[0].string
+                                if date == None:
+                                    raise
+                            except:
+                                date = ''
+
+                            regexs = None
+                            if item('regex'):
+                                try:
+                                    reg_item = item('regex')
+                                    regexs = parse_regex(reg_item)
+                                except:
+                                    pass
+                                
+                            if len(url) > 1:
+                                alt = 0
+                                playlist = []
+                                ignorelistsetting=True if '$$LSPlayOnlyOne$$' in url[0] else False
+                                
+                                for i in url:
+                                    if  add_playlist == "false" and not ignorelistsetting:
+                                        alt += 1
+                                        addLink(i,'%s) %s' %(alt, name.encode('utf-8', 'ignore')),thumbnail,fanArt,desc,genre,date,True,playlist,regexs,total)
+                                    elif  (add_playlist == "true" and  ask_playlist_items == 'true') or ignorelistsetting:
+                                        if regexs:
+                                            playlist.append(i+'&regexs='+regexs)
+                                        elif  any(x in i for x in resolve_url) and  i.startswith('http'):
+                                            playlist.append(i+'&mode=19')
+                                        else:
+                                            playlist.append(i)
+                                    else:
+                                        playlist.append(i)
+                                
+                                if len(playlist) > 1:       
+                                    addLink('', name.encode('utf-8'),thumbnail,fanArt,desc,genre,date,True,playlist,regexs,total)
+                            else:
+                                
+                                if dontLink:
+                                    return name,url[0],regexs
+                                if isXMLSource:
+                                        if not regexs == None: #<externallink> and <regex>
+                                            addDir(name.encode('utf-8'),ext_url[0].encode('utf-8'),1,thumbnail,fanArt,desc,genre,date,None,'!!update',regexs,url[0].encode('utf-8'))
+                                        else:
+                                            addDir(name.encode('utf-8'),ext_url[0].encode('utf-8'),1,thumbnail,fanArt,desc,genre,date,None,'source',None,None)
+                                elif isJsonrpc:
+                                    addDir(name.encode('utf-8'),ext_url[0],53,thumbnail,fanArt,desc,genre,date,None,'source')
+                                else:                    
+                                    addLink(url[0],name.encode('utf-8', 'ignore'),thumbnail,fanArt,desc,genre,date,True,None,regexs,total)
+                    except: pass
+            
 def getItems(items,fanart,dontLink=False):
         total = len(items)
         addon_log('Total Items: %s' %total)
@@ -385,10 +637,10 @@ def getItems(items,fanart,dontLink=False):
                                 utube = 'plugin://plugin.video.youtube/user/' + i.string + '/'
                                 isJsonrpc=utube
                         url.append(utube)
-                
-				
+            
+
                 elif len(item('urlsolve')) >0:
-                    
+                   
                     for i in item('urlsolve'):
                         if not i.string == None:
                             resolver = i.string +'&mode=19'
@@ -1074,7 +1326,7 @@ def getConfiguredProxy():
 def playmediawithproxy(media_url, name, iconImage,proxyip,port, proxyuser=None, proxypass=None): #jairox
 
     if media_url==None or media_url=='':
-        xbmc.executebuiltin("XBMC.Notification(Documented.HD,Unable to play empty Url,5000,"+icon+")")
+        xbmc.executebuiltin("XBMC.Notification(documented.hd,Unable to play empty Url,5000,"+icon+")")
         return
     progress = xbmcgui.DialogProgress()
     progress.create('Progress', 'Playing with custom proxy')
@@ -1113,7 +1365,7 @@ def playmediawithproxy(media_url, name, iconImage,proxyip,port, proxyuser=None, 
                 xbmc.sleep(1000)       
                 if player.urlplayed==False and time.time()-beforestart>12:
                     print 'failed!!!'
-                    xbmc.executebuiltin("XBMC.Notification(Documented.HD,Unable to play check proxy,5000,"+icon+")")
+                    xbmc.executebuiltin("XBMC.Notification(documented.hd,Unable to play check proxy,5000,"+icon+")")
                     break
                 #xbmc.sleep(1000)
         except: pass
@@ -1129,6 +1381,7 @@ def playmediawithproxy(media_url, name, iconImage,proxyip,port, proxyuser=None, 
         setKodiProxy(existing_proxy)
         print 'reset here'
     return ''
+
 
 def SaveToFile(file_name,page_data,append=False):
     if append:
@@ -1287,7 +1540,7 @@ def getCookieJar(COOKIEFILE):
 
     return cookieJar
 
-	
+
 def getGoogleRecaptchaResponse(captchakey, cj,type=1): #1 for get, 2 for post, 3 for rawpost
 #    #headers=[('User-Agent','Mozilla/5.0 (Windows NT 6.1; rv:14.0) Gecko/20100101 Firefox/14.0.1')]
 #    html_text=getUrl(url,noredir=True, cookieJar=cj,headers=headers)
@@ -1383,7 +1636,7 @@ def javascriptUnEscape(str):
             str=str.replace(j ,urllib.unquote(j))
     return str
 
-	
+
 def TakeInput(name, headname):
 
 
@@ -1521,7 +1774,7 @@ def urlsolver(url):
         else:
             resolver = resolved
     else:
-        xbmc.executebuiltin("XBMC.Notification(Documented.HD,Urlresolver donot support this domain. - ,5000)")
+        xbmc.executebuiltin("XBMC.Notification(documented.hd,Urlresolver donot support this domain. - ,5000)")
         resolver=url
     return resolver
 def tryplay(url,listitem,pdialogue=None):    
@@ -1709,12 +1962,12 @@ def play_playlist(name, mu_playlist,queueVideo=None):
 
 def download_file(name, url):
         if addon.getSetting('save_location') == "":
-            xbmc.executebuiltin("XBMC.Notification('Documented.HD','Choose a location to save files.',15000,"+icon+")")
+            xbmc.executebuiltin("XBMC.Notification('documented.hd','Choose a location to save files.',15000,"+icon+")")
             addon.openSettings()
         params = {'url': url, 'download_path': addon.getSetting('save_location')}
         downloader.download(name, params)
         dialog = xbmcgui.Dialog()
-        ret = dialog.yesno('Documented.HD', 'Do you want to add this file as a source?')
+        ret = dialog.yesno('documented.hd', 'Do you want to add this file as a source?')
         if ret:
             addSource(os.path.join(addon.getSetting('save_location'), name))
 
@@ -1804,7 +2057,7 @@ def ytdl_download(url,title,media_type='video'):
             info = {'url':xbmc_url,'title':title,'media_type':media_type}
             youtubedl.single_YD('',download=True,dl_info=info)
     else:
-        xbmc.executebuiltin("XBMC.Notification(First Play the Video, [COLOR lime]While playing download[/COLOR] ,10000)")
+        xbmc.executebuiltin("XBMC.Notification(First Play The Video, [COLOR lime]While playing download[/COLOR] ,10000)")
 
 ## Lunatixz PseudoTV feature
 def ascii(string):
@@ -2016,7 +2269,7 @@ def playsetresolved(url,name,iconimage,setresolved=True,reg=None):
     else:
         xbmc.executebuiltin('XBMC.RunPlugin('+url+')')
 
- 
+
 ##not a generic implemenation as it needs to convert            
 def d2x(d, root="root",nested=0):
 
@@ -2360,13 +2613,13 @@ elif mode==17 or mode==117:
                 else:
                     playsetresolved(url,name,iconimage,setresolved,regexs)
             else:
-                xbmc.executebuiltin("XBMC.Notification(Documented.HD,Failed to extract regex. - "+"this"+",4000,"+icon+")")
+                xbmc.executebuiltin("XBMC.Notification(documented.hd,Failed to extract regex. - "+"this"+",4000,"+icon+")")
 elif mode==18:
     addon_log("youtubedl")
     try:
         import youtubedl
     except Exception:
-        xbmc.executebuiltin("XBMC.Notification(Documented.HD,Please [COLOR yellow]install Youtube-dl[/COLOR] module ,10000,"")")
+        xbmc.executebuiltin("XBMC.Notification(documented.hd,Please [COLOR yellow]install Youtube-dl[/COLOR] module ,15000,"")")
     stream_url=youtubedl.single_YD(url)
     playsetresolved(stream_url,name,iconimage)
 
@@ -2384,6 +2637,22 @@ elif mode==53:
     addon_log("Requesting JSON-RPC Items")
     pluginquerybyJSON(url)
     #xbmcplugin.endOfDirectory(int(sys.argv[1]))
+    
+elif mode==54:
+    addon_log("getSearchData")
+    data=None
+    
+    if regexs and len(regexs)>0:
+        data,setresolved=getRegexParsed(regexs, url)
+        #print data
+        #url=''
+        if data.startswith('http') or data.startswith('smb') or data.startswith('nfs') or data.startswith('/'):
+            url=data
+            data=None
+        #create xml here
+    
+    getSearchData(url,fanart,data)
+    xbmcplugin.endOfDirectory(int(sys.argv[1]))
 if not viewmode==None:
    print 'setting view mode'
    xbmc.executebuiltin("Container.SetViewMode(%s)"%viewmode)
