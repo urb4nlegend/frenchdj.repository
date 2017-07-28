@@ -16,7 +16,7 @@
 
 <addon id="plugin.video.alive.hd"
        name="Alive.HD"
-       version="5.3"
+       version="5.3a"
        provider-name="frenchdj">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
@@ -45,7 +45,7 @@ Playlists organized by categories and any source comes from Youtube users.
 
 <addon id="plugin.video.documented.hd"
        name="Documented.HD"
-       version="2.1"
+       version="2.1a"
        provider-name="frenchdj">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>

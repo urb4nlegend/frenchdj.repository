@@ -1540,7 +1540,46 @@ def getCookieJar(COOKIEFILE):
 
     return cookieJar
 
+def doEval(fun_call,page_data,Cookie_Jar,m):
+    ret_val=''
+    #print fun_call
+    if functions_dir not in sys.path:
+        sys.path.append(functions_dir)
 
+#    print fun_call
+    try:
+        py_file='import '+fun_call.split('.')[0]
+#        print py_file,sys.path
+        exec( py_file)
+#        print 'done'
+    except:
+        #print 'error in import'
+        traceback.print_exc(file=sys.stdout)
+#    print 'ret_val='+fun_call
+    exec ('ret_val='+fun_call)
+#    print ret_val
+    #exec('ret_val=1+1')
+    try:
+        return str(ret_val)
+    except: return ret_val
+
+def doEvalFunction(fun_call,page_data,Cookie_Jar,m):
+#    print 'doEvalFunction'
+    ret_val=''
+    if functions_dir not in sys.path:
+        sys.path.append(functions_dir)
+        
+    f=open(os.path.join(functions_dir,'LSProdynamicCode.py'),"wb")
+    f.write("# -*- coding: utf-8 -*-\n")
+    f.write(fun_call.encode("utf-8"));
+    
+    f.close()
+    import LSProdynamicCode
+    ret_val=LSProdynamicCode.GetLSProData(page_data,Cookie_Jar,m)
+    try:
+        return str(ret_val)
+    except: return ret_val
+	
 def getGoogleRecaptchaResponse(captchakey, cj,type=1): #1 for get, 2 for post, 3 for rawpost
 #    #headers=[('User-Agent','Mozilla/5.0 (Windows NT 6.1; rv:14.0) Gecko/20100101 Firefox/14.0.1')]
 #    html_text=getUrl(url,noredir=True, cookieJar=cj,headers=headers)
