@@ -45,6 +45,7 @@ if REMOTE_DBG:
 
 
 addon = xbmcaddon.Addon('plugin.video.documented.hd')
+addondir = xbmc.translatePath(addon.getAddonInfo('profile') )
 addon_version = addon.getAddonInfo('version')
 profile = xbmc.translatePath(addon.getAddonInfo('profile').decode('utf-8'))
 home = xbmc.translatePath(addon.getAddonInfo('path').decode('utf-8'))
@@ -1569,7 +1570,7 @@ def doEvalFunction(fun_call,page_data,Cookie_Jar,m):
     if functions_dir not in sys.path:
         sys.path.append(functions_dir)
         
-    f=open(os.path.join(functions_dir,'LSProdynamicCode.py'),"wb")
+    f=open(os.path.join(home,'LSProdynamicCode.py'),"wb")
     f.write("# -*- coding: utf-8 -*-\n")
     f.write(fun_call.encode("utf-8"));
     
