@@ -2198,12 +2198,10 @@ def addLink(url,name,iconimage,fanart,description,genre,date,showcontext,playlis
                                         %(sys.argv[0], urllib.quote_plus(url), urllib.quote_plus(name))))
         else:
             mode = '12'
-            contextMenu.append(('[B][COLOR lime]| Download Video |[/COLOR][/B]','XBMC.RunPlugin(%s?url=%s&mode=21&name=%s)'
-                                    %(sys.argv[0], urllib.quote_plus(url), urllib.quote_plus(name))))
+
         if 'plugin://plugin.video.youtube/play/?video_id=' in url:
               yt_audio_url = url.replace('plugin://plugin.video.youtube/play/?video_id=','https://www.youtube.com/watch?v=')
-              contextMenu.append(('[B][COLOR blue]| Download Audio |[/COLOR][/B]','XBMC.RunPlugin(%s?url=%s&mode=24&name=%s)'
-                                      %(sys.argv[0], urllib.quote_plus(yt_audio_url), urllib.quote_plus(name))))
+
         u=sys.argv[0]+"?"
         play_list = False
         if playlist:
