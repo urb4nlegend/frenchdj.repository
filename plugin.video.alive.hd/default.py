@@ -43,7 +43,6 @@ if REMOTE_DBG:
             "You must add org.python.pydev.debug.pysrc to your PYTHONPATH.")
         sys.exit(1)
 
-
 addon = xbmcaddon.Addon('plugin.video.alive.hd')
 addon_version = addon.getAddonInfo('version')
 profile = xbmc.translatePath(addon.getAddonInfo('profile').decode('utf-8'))
@@ -65,7 +64,6 @@ else: FAV = []
 if os.path.exists(source_file)==True:
     SOURCES = open(source_file).read()
 else: SOURCES = []
-
 
 def addon_log(string):
     if debug == 'true':
@@ -337,7 +335,6 @@ def getData(url,icon, data=None):
         parse_m3u(soup)
         
 def getSearchData(url,icon, data=None):
-
     keyboard = xbmc.Keyboard()
     keyboard.setHeading("Alive.HD Search")
     keyboard.setDefault('')
@@ -364,7 +361,7 @@ def getSearchData(url,icon, data=None):
                 soup = getSoup(sear,data)
                 items = soup('item')        
                 total = len(items)
-                
+            
                 add_playlist = addon.getSetting('add_playlist')
                 ask_playlist_items =addon.getSetting('ask_playlist_items')
                 use_thumb = addon.getSetting('use_thumb')
@@ -441,8 +438,7 @@ def getSearchData(url,icon, data=None):
                                             utube = 'plugin://plugin.video.youtube/user/' + i.string + '/'
                                             isJsonrpc=utube
                                     url.append(utube)
-                        
-
+                      
                             elif len(item('urlsolve')) >0:
                                
                                 for i in item('urlsolve'):
@@ -585,7 +581,6 @@ def getItems(items,fanart,dontLink=False):
                 addon_log('Name Error')
                 name = ''
 
-
             try:
                 if item('epg'):
                     if item.epg_url:
@@ -630,7 +625,6 @@ def getItems(items,fanart,dontLink=False):
                                 isJsonrpc=utube
                         url.append(utube)
             
-
                 elif len(item('urlsolve')) >0:
                    
                     for i in item('urlsolve'):
@@ -796,17 +790,12 @@ def parse_regex(reg_item):
                         try:
                             regexs[i('name')[0].string]['includeheaders'] = i('includeheaders')[0].string
                         except:
-                            addon_log("Regex: -- No includeheaders --")
-
-                            
+                            addon_log("Regex: -- No includeheaders --")                
                         try:
                             regexs[i('name')[0].string]['listrepeat'] = i('listrepeat')[0].string
 #                            print 'listrepeat',regexs[i('name')[0].string]['listrepeat'],i('listrepeat')[0].string, i
                         except:
                             addon_log("Regex: -- No listrepeat --")
-                    
-                            
-
                         try:
                             regexs[i('name')[0].string]['proxy'] = i('proxy')[0].string
                         except:
@@ -843,8 +832,6 @@ def parse_regex(reg_item):
                             regexs[i('name')[0].string]['htmlunescape'] = i('htmlunescape')[0].string
                         except:
                             addon_log("Regex: -- Not a htmlunescape")
-
-
                         try:
                             regexs[i('name')[0].string]['readcookieonly'] = i('readcookieonly')[0].string
                         except:
@@ -880,7 +867,6 @@ def parse_regex(reg_item):
                 except:
                     regexs = None
                     addon_log('regex Error: '+name.encode('utf-8', 'ignore'))
-
 
 def getRegexParsed(regexs, url,cookieJar=None,forCookieJarOnly=False,recursiveCall=False,cachedPages={}, rawPost=False, cookie_jar_file=None):#0,1,2 = URL, regexOnly, CookieJarOnly
         if not recursiveCall:
@@ -936,8 +922,6 @@ def getRegexParsed(regexs, url,cookieJar=None,forCookieJarOnly=False,recursiveCa
                     m['setcookie']=getRegexParsed(regexs, m['setcookie'],cookieJar,recursiveCall=True,cachedPages=cachedPages)
                 if 'appendcookie' in m and m['appendcookie'] and '$doregex' in m['appendcookie']:
                     m['appendcookie']=getRegexParsed(regexs, m['appendcookie'],cookieJar,recursiveCall=True,cachedPages=cachedPages)
-
-
                 if  'post' in m and '$doregex' in m['post']:
                     m['post']=getRegexParsed(regexs, m['post'],cookieJar,recursiveCall=True,cachedPages=cachedPages)
 #                    print 'post is now',m['post']
@@ -951,7 +935,6 @@ def getRegexParsed(regexs, url,cookieJar=None,forCookieJarOnly=False,recursiveCa
 
                 if 'rawpost' in m and '$epoctime2$' in m['rawpost']:
                     m['rawpost']=m['rawpost'].replace('$epoctime2$',getEpocTime2())
-
 
                 link=''
                 if m['page'] and m['page'] in cachedPages and not 'ignorecache' in m and forCookieJarOnly==False :
@@ -974,14 +957,10 @@ def getRegexParsed(regexs, url,cookieJar=None,forCookieJarOnly=False,recursiveCa
 #                            if 
 #                            proxy = urllib2.ProxyHandler({ ('https' ? proxytouse[:5]=="https":"http") : proxytouse})
 #                            opener = urllib2.build_opener(proxy)
-#                            urllib2.install_opener(opener)
-
-                            
-                        
+#                            urllib2.install_opener(opener)                        
 #                        import urllib2
 #                        print 'urllib2.getproxies',urllib2.getproxies()
                         current_proxies=urllib2.ProxyHandler(urllib2.getproxies())
-        
         
                         #print 'getting pageUrl',pageUrl
                         req = urllib2.Request(pageUrl)
@@ -997,8 +976,7 @@ def getRegexParsed(regexs, url,cookieJar=None,forCookieJarOnly=False,recursiveCa
                                 #req.set_proxy(proxytouse, 'http')
                             opener = urllib2.build_opener(proxy)
                             urllib2.install_opener(opener)
-                            
-                        
+                                             
                         req.add_header('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:14.0) Gecko/20100101 Firefox/14.0.1')
                         proxytouse=None
 
@@ -1054,14 +1032,12 @@ def getRegexParsed(regexs, url,cookieJar=None,forCookieJarOnly=False,recursiveCa
                             opener = urllib2.build_opener(NoRedirection, urllib2.HTTPBasicAuthHandler(), urllib2.HTTPHandler())
                             opener = urllib2.install_opener(opener)
                             
-
                         if 'connection' in m:
 #                            print '..........................connection//////.',m['connection']
                             from keepalive import HTTPHandler
                             keepalive_handler = HTTPHandler()
                             opener = urllib2.build_opener(keepalive_handler)
                             urllib2.install_opener(opener)
-
 
                         #print 'after cookie jar'
                         post=None
@@ -1101,9 +1077,7 @@ def getRegexParsed(regexs, url,cookieJar=None,forCookieJarOnly=False,recursiveCa
                                 link = f.read()
                             else:
                                 link=response.read()
-                            
-                        
-                        
+                                                    
                             if 'proxy' in m and not current_proxies is None:
                                 urllib2.install_opener(urllib2.build_opener(current_proxies))
                             
@@ -1254,14 +1228,12 @@ def kodiJsonRequest(params):
         logger.warn("[%s] %s" % (params['method'], response['error']['message']))
         return None
 
-
 def setKodiProxy(proxysettings=None):
 
     if proxysettings==None:
 #        print 'proxy set to nothing'
         xbmc.executeJSONRPC('{"jsonrpc":"2.0", "method":"Settings.SetSettingValue", "params":{"setting":"network.usehttpproxy", "value":false}, "id":1}')
-    else:
-        
+    else:        
         ps=proxysettings.split(':')
         proxyURL=ps[0]
         proxyPort=ps[1]
@@ -1284,7 +1256,6 @@ def setKodiProxy(proxysettings=None):
             xbmc.executeJSONRPC('{"jsonrpc":"2.0", "method":"Settings.SetSettingValue", "params":{"setting":"network.httpproxyusername", "value":"' + str(proxyUsername) +'"}, "id":1}')
             xbmc.executeJSONRPC('{"jsonrpc":"2.0", "method":"Settings.SetSettingValue", "params":{"setting":"network.httpproxypassword", "value":"' + str(proxyPassword) +'"}, "id":1}')
 
-        
 def getConfiguredProxy():
     proxyActive = kodiJsonRequest({'jsonrpc': '2.0', "method":"Settings.GetSettingValue", "params":{"setting":"network.usehttpproxy"}, 'id': 1})['value']
 #    print 'proxyActive',proxyActive
@@ -1333,7 +1304,6 @@ def findAndReplaceWord(source_str, word_to_find,replace_with):
         source_str=''.join(new_string)
     return source_str
 
-
 def getCookiesString(cookieJar):
     try:
         cookieString=""
@@ -1342,7 +1312,6 @@ def getCookiesString(cookieJar):
     except: pass
     #print 'cookieString',cookieString
     return cookieString
-
 
 def saveCookieJar(cookieJar,COOKIEFILE):
     try:
@@ -1406,9 +1375,7 @@ def doEvalFunction(fun_call,page_data,Cookie_Jar,m):
         return str(ret_val)
     except: return ret_val
     
-
 def getUrl(url, cookieJar=None,post=None, timeout=20, headers=None, noredir=False):
-
 
     cookie_handler = urllib2.HTTPCookieProcessor(cookieJar)
 
@@ -1448,14 +1415,12 @@ def javascriptUnEscape(str):
             str=str.replace(j ,urllib.unquote(j))
     return str
 
-
 def TakeInput(name, headname):
     kb = xbmc.Keyboard('default', 'heading', True)
     kb.setDefault(name)
     kb.setHeading(headname)
     kb.setHiddenInput(False)
     return kb.getText()
-
    
 #########################################################
 
@@ -1494,7 +1459,6 @@ def get_params():
                     param[splitparams[0]]=splitparams[1]
         return param
 
-
 def getFavorites():
         items = json.loads(open(favorites).read())
         total = len(items)
@@ -1521,7 +1485,6 @@ def getFavorites():
             else:
                 addDir(name,url,i[4],iconimage,fanart,'','','','','fav')
 
-
 def addFavorite(name,url,iconimage,fanart,mode,playlist=None,regexs=None):
         favList = []
         try:
@@ -1544,7 +1507,6 @@ def addFavorite(name,url,iconimage,fanart,mode,playlist=None,regexs=None):
             b.write(json.dumps(data))
             b.close()
 
-
 def rmFavorite(name):
         data = json.loads(open(favorites).read())
         for index in range(len(data)):
@@ -1555,7 +1517,6 @@ def rmFavorite(name):
                 b.close()
                 break
         xbmc.executebuiltin("XBMC.Container.Refresh")
-
 	
 def play_playlist(name, mu_playlist,queueVideo=None):
         playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
@@ -1568,8 +1529,6 @@ def play_playlist(name, mu_playlist,queueVideo=None):
             progress = xbmcgui.DialogProgress()
             progress.create('Progress', 'Trying Multiple Links')
             for i in mu_playlist:
-                
-
                 if '$$lsname=' in i:
                     d_name=i.split('$$lsname=')[1].split('&regexs')[0]
                     names.append(d_name)                                       
@@ -1715,8 +1674,6 @@ def _search(url,name):
         pluginquerybyJSON(url)
 
 def addDir(name,url,mode,iconimage,fanart,description,genre,date,credits,showcontext=False,regexs=None,reg_url=None,allinfo={}):
-
-
 
         if regexs and len(regexs)>0:
             u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)+"&fanart="+urllib.quote_plus(fanart)+"&regexs="+regexs
@@ -2084,7 +2041,6 @@ elif mode==1:
     getData(url,fanart,data)
     xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
-
 elif mode==2:
     addon_log("getChannelItems")
     getChannelItems(name,url,fanart)
@@ -2139,7 +2095,6 @@ elif mode==12:
     else:
 #        print 'Not setting setResolvedUrl'
         xbmc.executebuiltin('XBMC.RunPlugin('+url+')')
-
 
 elif mode==13:
     addon_log("play_playlist")
@@ -2313,4 +2268,3 @@ elif mode==54:
 if not viewmode==None:
    print 'setting view mode'
    xbmc.executebuiltin("Container.SetViewMode(%s)"%viewmode)
-    
