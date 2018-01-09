@@ -39,14 +39,11 @@ Channels and Playlists organized by categories. Source Youtube Website.
 
 <addon id="plugin.video.documented.hd"
        name="Documented.HD"
-       version="4.0"
+       version="4.1"
        provider-name="frenchdj">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
     <import addon="script.module.beautifulsoup" />
-    <import addon="script.module.simple.downloader" />
-    <import addon="script.module.beautifulsoup4" />
-    <import addon="script.module.requests" />
     <import addon="script.module.httplib2" />
     <import addon="plugin.video.youtube" />
     <import addon="script.module.simplejson" />
@@ -57,7 +54,7 @@ Channels and Playlists organized by categories. Source Youtube Website.
   <extension point="xbmc.addon.metadata">
     <summary lang="en">[ 2018 Edition ]</summary>
     <description>Real Stories Documentaries in HD Quality.
-Playlists organized by categories and any source comes from Youtube users.
+Channels and Playlists organized by categories. Source Youtube Website.
 [B][COLOR lime]Advised the latest version of youtube 5.*.*[/B][/COLOR]</description>
     <platform>all</platform>
   </extension>
