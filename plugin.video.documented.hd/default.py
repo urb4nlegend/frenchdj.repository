@@ -344,8 +344,6 @@ def getSearchData(url,icon, data=None):
     fanart=''
     dontLink=False
     os.path.join(home, 'resources', 'fanart.gif')
-    import checkbad
-    checkbad.do_block_check(False)
     soup = getSoup(url,data)
     #print type(soup)
     if isinstance(soup,BeautifulSOAP):
