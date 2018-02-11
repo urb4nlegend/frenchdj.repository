@@ -7,8 +7,6 @@ import xbmcplugin
 import xbmcgui
 import xbmcaddon
 import xbmcvfs
-import traceback
-import cookielib
 from BeautifulSoup import BeautifulStoneSoup, BeautifulSoup, BeautifulSOAP
 viewmode=None
 try:
@@ -246,7 +244,7 @@ def getData(url,icon, data=None):
                     fanArt = fanart
 
                 try:
-                    addDir(name.encode('utf-8'),linkedUrl.encode('utf-8'),54,thumbnail,fanArt,'','','',None,'source')
+                    addDir(name.encode('utf-8'),linkedUrl.encode('utf-8'),13,thumbnail,fanArt,'','','',None,'source')
                 except:
                     addon_log('There was a problem adding directory from getData(): '+name.encode('utf-8', 'ignore'))
         else:
@@ -328,18 +326,18 @@ def getData(url,icon, data=None):
             getItems(soup('item'),fanart)
     else:
         parse_m3u(soup)
-        
+		
+# Necessario para a funcionalidade de pesquisa dedicada do Documented.HD        
 def getSearchData(url,icon, data=None):
-
     keyboard = xbmc.Keyboard()
-    keyboard.setHeading("Documented.HD Search")
+    keyboard.setHeading("[COLOR white][B]Documented[COLOR lime].[COLOR white]HD Search[/B][/COLOR]")
     keyboard.setDefault('')
     keyboard.doModal()
     if keyboard.isConfirmed():
         term =  keyboard.getText()
         term = term.replace(' ','').lower()
     else:
-        xbmcgui.Dialog().ok('Documented.HD', 'Blank Searches are not allowed.')
+        xbmcgui.Dialog().ok('[COLOR white][B]Documented[COLOR lime].[COLOR white]HD[/B][/COLOR]', '[COLOR white][B]Blank Searches are not allowed.[/B][/COLOR]')
         quit()
     fanart=''
     dontLink=False
@@ -427,7 +425,7 @@ def getSearchData(url,icon, data=None):
                                             utube = 'plugin://plugin.video.youtube/play/?&order=default&playlist_id=' + i.string
                                         elif i.string.startswith('PL') or i.string.startswith('UU'):
                                             utube = 'plugin://plugin.video.youtube/play/?playlist_id=' + i.string
-                                        elif i.string.startswith('UC') and len(i.string) > 12:
+                                        elif i.string.startswith('UC') and len(i.string) > 7:
                                             utube = 'plugin://plugin.video.youtube/channel/' + i.string + '/'
                                             isJsonrpc=utube
                                         elif not i.string.startswith('UC') and not (i.string.startswith('PL'))  :
@@ -540,7 +538,7 @@ def getSearchData(url,icon, data=None):
                                         else:
                                             addDir(name.encode('utf-8'),ext_url[0].encode('utf-8'),1,thumbnail,fanArt,desc,genre,date,None,'source',None,None)
                                 elif isJsonrpc:
-                                    addDir(name.encode('utf-8'),ext_url[0],53,thumbnail,fanArt,desc,genre,date,None,'source')
+                                    addDir(name.encode('utf-8'),ext_url[0],12,thumbnail,fanArt,desc,genre,date,None,'source')
                                 else:                    
                                     addLink(url[0],name.encode('utf-8', 'ignore'),thumbnail,fanArt,desc,genre,date,True,None,regexs,total)
                     except: pass
@@ -613,7 +611,7 @@ def getItems(items,fanart,dontLink=False):
                                 utube = 'plugin://plugin.video.youtube/play/?&order=default&playlist_id=' + i.string
                             elif i.string.startswith('PL') or i.string.startswith('UU'):
                                 utube = 'plugin://plugin.video.youtube/play/?playlist_id=' + i.string
-                            elif i.string.startswith('UC') and len(i.string) > 12:
+                            elif i.string.startswith('UC') and len(i.string) > 7:
                                 utube = 'plugin://plugin.video.youtube/channel/' + i.string + '/'
                                 isJsonrpc=utube
                             elif not i.string.startswith('UC') and not (i.string.startswith('PL'))  :
@@ -734,7 +732,7 @@ def getItems(items,fanart,dontLink=False):
                                 addDir(name.encode('utf-8'),ext_url[0].encode('utf-8'),1,thumbnail,fanArt,desc,genre,date,None,'source',None,None)
                                 #addDir(name.encode('utf-8'),url[0].encode('utf-8'),1,thumbnail,fanart,desc,genre,date,None,'source')
                     elif isJsonrpc:
-                        addDir(name.encode('utf-8'),ext_url[0],53,thumbnail,fanArt,desc,genre,date,None,'source')
+                        addDir(name.encode('utf-8'),ext_url[0],12,thumbnail,fanArt,desc,genre,date,None,'source')
                         #xbmc.executebuiltin("Container.SetViewMode(500)")
                     else:
                         
@@ -743,6 +741,7 @@ def getItems(items,fanart,dontLink=False):
             except:
                 addon_log('There was a problem adding item - '+name.encode('utf-8', 'ignore'))
 
+# Necessario para abrir os Favoritos do KODI que foram adicionados ao Documented.HD 
 def parse_regex(reg_item):
                 try:
                     regexs = {}
@@ -865,6 +864,7 @@ def parse_regex(reg_item):
                     regexs = None
                     addon_log('regex Error: '+name.encode('utf-8', 'ignore'))
 
+# Necessario para abrir os Favoritos do KODI que foram adicionados ao Documented.HD 
 def getRegexParsed(regexs, url,cookieJar=None,forCookieJarOnly=False,recursiveCall=False,cachedPages={}, rawPost=False, cookie_jar_file=None):#0,1,2 = URL, regexOnly, CookieJarOnly
         if not recursiveCall:
             regexs = eval(urllib.unquote(regexs))
@@ -1195,7 +1195,8 @@ def getRegexParsed(regexs, url,cookieJar=None,forCookieJarOnly=False,recursiveCa
             return
         else:
             return url,setresolved
-
+			
+# Necessario para abrir os canais do Youtube adicionados ao Documented.HD 
 def kodiJsonRequest(params):
     data = json.dumps(params)
     request = xbmc.executeJSONRPC(data)
@@ -1212,83 +1213,6 @@ def kodiJsonRequest(params):
     except KeyError:
         logger.warn("[%s] %s" % (params['method'], response['error']['message']))
         return None
-
-def setKodiProxy(proxysettings=None):
-
-    if proxysettings==None:
-#        print 'proxy set to nothing'
-        xbmc.executeJSONRPC('{"jsonrpc":"2.0", "method":"Settings.SetSettingValue", "params":{"setting":"network.usehttpproxy", "value":false}, "id":1}')
-    else:
-        
-        ps=proxysettings.split(':')
-        proxyURL=ps[0]
-        proxyPort=ps[1]
-        proxyType=ps[2]
-        proxyUsername=None
-        proxyPassword=None
-        
-        if len(ps)>3 and '@' in ps[3]: #jairox ###proxysettings
-            proxyUsername=ps[3].split('@')[0] #jairox ###ps[3]
-            proxyPassword=ps[3].split('@')[1] #jairox ###proxysettings.split('@')[-1]
-
-#        print 'proxy set to', proxyType, proxyURL,proxyPort
-        xbmc.executeJSONRPC('{"jsonrpc":"2.0", "method":"Settings.SetSettingValue", "params":{"setting":"network.usehttpproxy", "value":true}, "id":1}')
-        xbmc.executeJSONRPC('{"jsonrpc":"2.0", "method":"Settings.SetSettingValue", "params":{"setting":"network.httpproxytype", "value":' + str(proxyType) +'}, "id":1}')
-        xbmc.executeJSONRPC('{"jsonrpc":"2.0", "method":"Settings.SetSettingValue", "params":{"setting":"network.httpproxyserver", "value":"' + str(proxyURL) +'"}, "id":1}')
-        xbmc.executeJSONRPC('{"jsonrpc":"2.0", "method":"Settings.SetSettingValue", "params":{"setting":"network.httpproxyport", "value":' + str(proxyPort) +'}, "id":1}')
-                
-        if not proxyUsername==None:
-            xbmc.executeJSONRPC('{"jsonrpc":"2.0", "method":"Settings.SetSettingValue", "params":{"setting":"network.httpproxyusername", "value":"' + str(proxyUsername) +'"}, "id":1}')
-            xbmc.executeJSONRPC('{"jsonrpc":"2.0", "method":"Settings.SetSettingValue", "params":{"setting":"network.httpproxypassword", "value":"' + str(proxyPassword) +'"}, "id":1}')
-        
-def getConfiguredProxy():
-    proxyActive = kodiJsonRequest({'jsonrpc': '2.0', "method":"Settings.GetSettingValue", "params":{"setting":"network.usehttpproxy"}, 'id': 1})['value']
-#    print 'proxyActive',proxyActive
-    proxyType = kodiJsonRequest({'jsonrpc': '2.0', "method":"Settings.GetSettingValue", "params":{"setting":"network.httpproxytype"}, 'id': 1})['value']
-
-    if proxyActive: # PROXY_HTTP
-        proxyURL = kodiJsonRequest({'jsonrpc': '2.0', "method":"Settings.GetSettingValue", "params":{"setting":"network.httpproxyserver"}, 'id': 1})['value']
-        proxyPort = unicode(kodiJsonRequest({'jsonrpc': '2.0', "method":"Settings.GetSettingValue", "params":{"setting":"network.httpproxyport"}, 'id': 1})['value'])
-        proxyUsername = kodiJsonRequest({'jsonrpc': '2.0', "method":"Settings.GetSettingValue", "params":{"setting":"network.httpproxyusername"}, 'id': 1})['value']
-        proxyPassword = kodiJsonRequest({'jsonrpc': '2.0', "method":"Settings.GetSettingValue", "params":{"setting":"network.httpproxypassword"}, 'id': 1})['value']
-
-        if proxyUsername and proxyPassword and proxyURL and proxyPort:
-            return proxyURL + ':' + str(proxyPort)+':'+str(proxyType) + ':' + proxyUsername + '@' + proxyPassword
-        elif proxyURL and proxyPort:
-            return proxyURL + ':' + str(proxyPort)+':'+str(proxyType)
-    else:
-        return None
-        
-def getCookiesString(cookieJar):
-    try:
-        cookieString=""
-        for index, cookie in enumerate(cookieJar):
-            cookieString+=cookie.name + "=" + cookie.value +";"
-    except: pass
-    #print 'cookieString',cookieString
-    return cookieString
-
-def saveCookieJar(cookieJar,COOKIEFILE):
-    try:
-        complete_path=os.path.join(profile,COOKIEFILE)
-        cookieJar.save(complete_path,ignore_discard=True)
-    except: pass
-
-def getCookieJar(COOKIEFILE):
-
-    cookieJar=None
-    if COOKIEFILE:
-        try:
-            complete_path=os.path.join(profile,COOKIEFILE)
-            cookieJar = cookielib.LWPCookieJar()
-            cookieJar.load(complete_path,ignore_discard=True)
-        except:
-            cookieJar=None
-
-    if not cookieJar:
-        cookieJar = cookielib.LWPCookieJar()
-
-    return cookieJar
 
 def doEval(fun_call,page_data,Cookie_Jar,m):
     ret_val=''
@@ -1501,7 +1425,7 @@ def addDir(name,url,mode,iconimage,fanart,description,genre,date,credits,showcon
                                     %(sys.argv[0], urllib.quote_plus(name))))
             if showcontext == '!!update':
                 fav_params2 = (
-                    '%s?url=%s&mode=17&regexs=%s'
+                    '%s?url=%s&mode=9&regexs=%s'
                     %(sys.argv[0], urllib.quote_plus(reg_url), regexs)
                     )
                 contextMenu.append(('[COLOR yellow]!!update[/COLOR]','XBMC.RunPlugin(%s)' %fav_params2))
@@ -1521,6 +1445,7 @@ def uni(string, encoding = 'utf-8'):
     return string
 def removeNonAscii(s): return "".join(filter(lambda x: ord(x)<128, s))
 
+# Necessario para abrir os canais do Youtube adicionados ao Documented.HD 
 def sendJSON( command):
     data = ''
     try:
@@ -1530,6 +1455,7 @@ def sendJSON( command):
 
     return uni(data)
 
+# Necessario para abrir os canais do Youtube adicionados ao Alive.HD 
 def pluginquerybyJSON(url,give_me_result=None,playlist=False):
     if 'audio' in url:
         json_query = uni('{"jsonrpc":"2.0","method":"Files.GetDirectory","params": {"directory":"%s","media":"video", "properties": ["title", "album", "artist", "duration","thumbnail", "year"]}, "id": 1}') %url
@@ -1564,7 +1490,7 @@ def pluginquerybyJSON(url,give_me_result=None,playlist=False):
                         xbmcplugin.setContent(int(sys.argv[1]), 'episodes')
 
             else:
-                addDir(name,url,53,thumbnail,fanart,'','','','',allinfo=meta)
+                addDir(name,url,12,thumbnail,fanart,'','','','',allinfo=meta)
         xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 def addLink(url,name,iconimage,fanart,description,genre,date,showcontext,playlist,regexs,total,setCookie="",allinfo={}):
@@ -1586,7 +1512,7 @@ def addLink(url,name,iconimage,fanart,description,genre,date,showcontext,playlis
         ok = True
         isFolder=False
         if regexs:
-            mode = '17'
+            mode = '9'
             if 'listrepeat' in regexs:
                 isFolder=True
 #                print 'setting as folder in link'
@@ -1606,7 +1532,7 @@ def addLink(url,name,iconimage,fanart,description,genre,date,showcontext,playlis
                 contextMenu.append(('[B][COLOR blue]| Download Audio |[/COLOR][/B]','XBMC.RunPlugin(%s?url=%s&mode=24&name=%s)'
                                         %(sys.argv[0], urllib.quote_plus(url), urllib.quote_plus(name))))
         else:
-            mode = '12'
+            mode = '7'
 
         if 'plugin://plugin.video.youtube/play/?video_id=' in url:
               yt_audio_url = url.replace('plugin://plugin.video.youtube/play/?video_id=','https://www.youtube.com/watch?v=')
@@ -1617,7 +1543,7 @@ def addLink(url,name,iconimage,fanart,description,genre,date,showcontext,playlis
             if addon.getSetting('add_playlist') == "false" and '$$LSPlayOnlyOne$$' not in playlist[0] :
                 u += "url="+urllib.quote_plus(url)+"&mode="+mode
             else:
-                u += "mode=13&name=%s&playlist=%s" %(urllib.quote_plus(name), urllib.quote_plus(str(playlist).replace(',','||')))
+                u += "mode=8&name=%s&playlist=%s" %(urllib.quote_plus(name), urllib.quote_plus(str(playlist).replace(',','||')))
                 name = name + '[COLOR magenta] (' + str(len(playlist)) + ' items )[/COLOR]'
                 play_list = True
         else:
@@ -1679,7 +1605,7 @@ def addLink(url,name,iconimage,fanart,description,genre,date,showcontext,playlis
                 if addon.getSetting('add_playlist') == "false":
                     playlist_name = name.split(') ')[1]
                     contextMenu_ = [
-                        ('Play '+playlist_name+' PlayList','XBMC.RunPlugin(%s?mode=13&name=%s&playlist=%s)'
+                        ('Play '+playlist_name+' PlayList','XBMC.RunPlugin(%s?mode=8&name=%s&playlist=%s)'
                          %(sys.argv[0], urllib.quote_plus(playlist_name), urllib.quote_plus(str(playlist).replace(',','||'))))
                          ]
                     liz.addContextMenuItems(contextMenu_)
@@ -1722,24 +1648,6 @@ def d2x(d, root="root",nested=0):
 
     return xml
 xbmcplugin.setContent(int(sys.argv[1]), 'movies')
-
-try:
-    xbmcplugin.addSortMethod(int(sys.argv[1]), xbmcplugin.SORT_METHOD_UNSORTED)
-except:
-    pass
-try:
-    xbmcplugin.addSortMethod(int(sys.argv[1]), xbmcplugin.SORT_METHOD_LABEL)
-except:
-    pass
-try:
-    xbmcplugin.addSortMethod(int(sys.argv[1]), xbmcplugin.SORT_METHOD_DATE)
-except:
-    pass
-try:
-    xbmcplugin.addSortMethod(int(sys.argv[1]), xbmcplugin.SORT_METHOD_GENRE)
-except:
-    pass
-
 
 params=get_params()
 
@@ -1800,7 +1708,7 @@ addon_log("Name: "+str(name))
 if not playitem =='':
     s=getSoup('',data=playitem)
     name,url,regexs=getItems(s,None,dontLink=True)
-    mode=117 
+    mode=10 
 if mode==None:
     addon_log("getSources")
     getSources()
@@ -1861,7 +1769,7 @@ elif mode==6:
         pass
     rmFavorite(name)
 
-elif mode==12:
+elif mode==7:
     addon_log("setResolvedUrl")
     if not url.startswith("plugin://plugin") or not any(x in url for x in g_ignoreSetResolved):#not url.startswith("plugin://plugin.video.f4mTester") :
         setres=True
@@ -1877,11 +1785,11 @@ elif mode==12:
 #        print 'Not setting setResolvedUrl'
         xbmc.executebuiltin('XBMC.RunPlugin('+url+')')
 
-elif mode==13:
+elif mode==8:
     addon_log("play_playlist")
     play_playlist(name, playlist)
 
-elif mode==17 or mode==117:
+elif mode==9 or mode==10:
     addon_log("getRegexParsed")
 
     data=None
@@ -2026,12 +1934,12 @@ elif mode==17 or mode==117:
             else:
                 xbmc.executebuiltin("XBMC.Notification(documented.hd,Failed to extract regex. - "+"this"+",4000,"+icon+")")
 
-elif mode==53:
+elif mode==12:
     addon_log("Requesting JSON-RPC Items")
     pluginquerybyJSON(url)
     #xbmcplugin.endOfDirectory(int(sys.argv[1]))
     
-elif mode==54:
+elif mode==13:
     addon_log("getSearchData")
     data=None
     

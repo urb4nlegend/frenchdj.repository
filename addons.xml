@@ -38,8 +38,8 @@ Channels and Playlists organized by categories. Source Youtube Website.
 </addon>
 
 <addon id="plugin.video.documented.hd"
-       name="Documented.HD"
-       version="4.2"
+       name="[COLOR white][B]Documented[COLOR lime].[COLOR white]HD[/B][/COLOR]"
+       version="4.3"
        provider-name="frenchdj">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
