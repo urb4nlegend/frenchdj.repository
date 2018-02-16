@@ -42,8 +42,6 @@ if REMOTE_DBG:
 addon = xbmcaddon.Addon('plugin.video.alive.hd')
 addon_version = addon.getAddonInfo('version')
 profile = xbmc.translatePath(addon.getAddonInfo('profile').decode('utf-8'))
-if not os.path.exists(profile):
-       os.makedirs(profile)
 home = xbmc.translatePath(addon.getAddonInfo('path').decode('utf-8'))
 favorites = os.path.join(profile, 'favorites')
 history = os.path.join(profile, 'history')
@@ -1170,31 +1168,35 @@ def get_params():
                 if (len(splitparams))==2:
                     param[splitparams[0]]=splitparams[1]
         return param
-
+				
 def getFavorites():
-        items = json.loads(open(favorites).read())
-        total = len(items)
-        for i in items:
-            name = i[0]
-            url = i[1]
-            iconimage = i[2]
-            try:
-                fanArt = i[3]
-                if fanArt == None:
-                    raise
-            except:
-                if addon.getSetting('use_thumb') == "true":
-                    fanArt = iconimage
+        if os.path.exists(favorites):
+            items = json.loads(open(favorites).read())
+            total = len(items)
+            for i in items:
+                name = i[0]
+                url = i[1]
+                iconimage = i[2]
+                try:
+                    fanArt = i[3]
+                    if fanArt == None:
+                        raise
+                except:
+                    if addon.getSetting('use_thumb') == "true":
+                        fanArt = iconimage
+                    else:
+                        fanArt = fanart
+                try: playlist = i[5]
+                except: playlist = None
+                try: regexs = i[6]
+                except: regexs = None
+                if i[4] == 0:
+                    addLink(url,name,iconimage,fanArt,'','','','fav',playlist,regexs,total)
                 else:
-                    fanArt = fanart
-            try: playlist = i[5]
-            except: playlist = None
-            try: regexs = i[6]
-            except: regexs = None
-            if i[4] == 0:
-                addLink(url,name,iconimage,fanArt,'','','','fav',playlist,regexs,total)
-            else:
-                addDir(name,url,i[4],iconimage,fanart,'','','','','fav')
+                    addDir(name,url,i[4],iconimage,fanart,'','','','','fav')
+        else:
+
+                addDir('[COLOR red][B][ No Favourites Added Yet ][/B][/COLOR]','','','','','','','','','fav')
 
 def addFavorites(name,url,iconimage,fanart,mode,playlist=None,regexs=None):
         favList = []
