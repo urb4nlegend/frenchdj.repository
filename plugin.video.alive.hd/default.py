@@ -99,14 +99,14 @@ def makeRequest(url, headers=None):
                 xbmc.executebuiltin("XBMC.Notification(alive.hd, server error. - "+str(e.reason)+",10000,"+icon+")")
 				
 def SKindex():
-    addDir('[B][COLOR deepskyblue]| Alive Favourites[/COLOR][/B]','[B][COLOR deepskyblue]| Alive Favourites[/COLOR][/B]',4,'https://i.imgur.com/UQHRA7Y.png',FANART,'','','','')
+    addDir('[B][COLOR deepskyblue]| Alive[COLOR white].[COLOR deepskyblue]HD Favourites[/COLOR][/B]','[B][COLOR deepskyblue]| Alive[COLOR white].[COLOR deepskyblue]HD Favourites[/COLOR][/B]',4,'https://i.imgur.com/f8uL4ek.png',FANART,'','','','')
     getData(Base,FANART)
     xbmcplugin.endOfDirectory(int(sys.argv[1]))
 				
 def getSources():
         try:
             if os.path.exists(favorites) == True:
-                addDir('[B][COLOR deepskyblue][ Alive Favourites ][/COLOR][/B]','[B][COLOR deepskyblue][ Alive Favourites ][/COLOR][/B]',4,'https://i.imgur.com/UQHRA7Y.png' , os.path.join(home, 'fanart.gif'),FANART,'','','','')
+                addDir('[B][COLOR deepskyblue]| Alive[COLOR white].[COLOR deepskyblue]HD Favourites[/COLOR][/B]','[B][COLOR deepskyblue]| Alive[COLOR white].[COLOR deepskyblue]HD Favourites[/COLOR][/B]',4,'https://i.imgur.com/f8uL4ek.png' , os.path.join(home, 'fanart.gif'),FANART,'','','','')
             if addon.getSetting("browse_xml_database") == "true":
                 addDir('XML Database','http://xbmcplus.xb.funpic.de/www-data/filesystem/',15,icon,FANART,'','','','')
             if addon.getSetting("browse_community") == "true":
@@ -327,14 +327,14 @@ def getData(url,icon, data=None):
 		
 def getSearchData(url,icon, data=None):
     keyboard = xbmc.Keyboard()
-    keyboard.setHeading("[COLOR white][B]Alive[COLOR lime].[COLOR white]HD Search[/B][/COLOR]")
+    keyboard.setHeading("[COLOR white][B]Alive[COLOR deepskyblue].[COLOR white]HD Search[/B][/COLOR]")
     keyboard.setDefault('')
     keyboard.doModal()
     if keyboard.isConfirmed():
         term =  keyboard.getText()
         term = term.replace(' ','').lower()
     else:
-        xbmcgui.Dialog().ok('[COLOR white][B]Alive[COLOR lime].[COLOR white]HD[/B][/COLOR]', '[COLOR white][B]Blank Searches are not allowed.[/B][/COLOR]')
+        xbmcgui.Dialog().ok('[COLOR white][B]Alive[COLOR deepskyblue].[COLOR white]HD[/B][/COLOR]', '[COLOR white][B]Blank Searches are not allowed.[/B][/COLOR]')
         quit()
     fanart=''
     dontLink=False
@@ -1281,7 +1281,7 @@ def addDir(name,url,mode,iconimage,fanart,description,genre,date,credits,showcon
                 contextMenu.append(('Download','XBMC.RunPlugin(%s?url=%s&mode=9&name=%s)'
                                     %(sys.argv[0], urllib.quote_plus(url), urllib.quote_plus(name))))
             elif showcontext == 'fav':
-                contextMenu.append(('[B][COLOR lime]Remove Alive Favourite[/COLOR][/B]','XBMC.RunPlugin(%s?mode=6&name=%s)'
+                contextMenu.append(('[B][COLOR blue]Remove Alive Favourite[/COLOR][/B]','XBMC.RunPlugin(%s?mode=6&name=%s)'
                                     %(sys.argv[0], urllib.quote_plus(name))))
             if not name in FAV:
                 contextMenu.append(('[B][COLOR lime]Add to Alive Favourites[/COLOR][/B]','XBMC.RunPlugin(%s?mode=5&name=%s&url=%s&iconimage=%s&fanart=%s&fav_mode=%s)'
@@ -1440,7 +1440,7 @@ def addLink(url,name,iconimage,fanart,description,genre,date,showcontext,playlis
             #contextMenu = []
             if showcontext == 'fav':
                 contextMenu.append(
-                    ('[B][COLOR lime]Remove Alive Favourite[/COLOR][/B]','XBMC.RunPlugin(%s?mode=6&name=%s)'
+                    ('[B][COLOR blue]Remove Alive Favourite[/COLOR][/B]','XBMC.RunPlugin(%s?mode=6&name=%s)'
                      %(sys.argv[0], urllib.quote_plus(name)))
                      )
             elif not name in FAV:
