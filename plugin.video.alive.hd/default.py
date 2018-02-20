@@ -99,14 +99,14 @@ def makeRequest(url, headers=None):
                 xbmc.executebuiltin("XBMC.Notification(alive.hd, server error. - "+str(e.reason)+",10000,"+icon+")")
 				
 def SKindex():
-    addDir('[B][COLOR deepskyblue]| Alive[COLOR white].[COLOR deepskyblue]HD Favourites[/COLOR][/B]','[B][COLOR deepskyblue]| Alive[COLOR white].[COLOR deepskyblue]HD Favourites[/COLOR][/B]',4,'https://i.imgur.com/f8uL4ek.png',FANART,'','','','')
+    addDir('[B][COLOR deepskyblue]| Favourites[/COLOR][/B]','[B][COLOR deepskyblue]| Favourites[/COLOR][/B]',4,'https://i.imgur.com/f8uL4ek.png',FANART,'','','','')
     getData(Base,FANART)
     xbmcplugin.endOfDirectory(int(sys.argv[1]))
 				
 def getSources():
         try:
             if os.path.exists(favorites) == True:
-                addDir('[B][COLOR deepskyblue]| Alive[COLOR white].[COLOR deepskyblue]HD Favourites[/COLOR][/B]','[B][COLOR deepskyblue]| Alive[COLOR white].[COLOR deepskyblue]HD Favourites[/COLOR][/B]',4,'https://i.imgur.com/f8uL4ek.png' , os.path.join(home, 'fanart.gif'),FANART,'','','','')
+                addDir('[B][COLOR deepskyblue]| Favourites[/COLOR][/B]','[B][COLOR deepskyblue]| Favourites[/COLOR][/B]',4,'https://i.imgur.com/f8uL4ek.png' , os.path.join(home, 'fanart.gif'),FANART,'','','','')
             if addon.getSetting("browse_xml_database") == "true":
                 addDir('XML Database','http://xbmcplus.xb.funpic.de/www-data/filesystem/',15,icon,FANART,'','','','')
             if addon.getSetting("browse_community") == "true":
