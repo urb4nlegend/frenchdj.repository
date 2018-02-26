@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="plugin.video.documented.hd"
        name="[COLOR white][B]Documented[COLOR lime].[COLOR white]HD[/B][/COLOR]"
-       version="5.0a"
+       version="5.1"
        provider-name="frenchdj">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
