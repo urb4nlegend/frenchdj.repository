@@ -327,14 +327,14 @@ def getData(url,icon, data=None):
 		
 def getSearchData(url,icon, data=None):
     keyboard = xbmc.Keyboard()
-    keyboard.setHeading("[COLOR white][B]Alive[COLOR deepskyblue].[COLOR white]HD Search[/B][/COLOR]")
+    keyboard.setHeading("[COLOR white][B]Alive[COLOR lime].[COLOR white]HD Search[/B][/COLOR]")
     keyboard.setDefault('')
     keyboard.doModal()
     if keyboard.isConfirmed():
         term =  keyboard.getText()
         term = term.replace(' ','').lower()
     else:
-        xbmcgui.Dialog().ok('[COLOR white][B]Alive[COLOR deepskyblue].[COLOR white]HD[/B][/COLOR]', '[COLOR white][B]Blank Searches are not allowed.[/B][/COLOR]')
+        xbmcgui.Dialog().ok('[COLOR white][B]Alive[COLOR lime].[COLOR white]HD[/B][/COLOR]', '[COLOR white][B]Blank Searches are not allowed.[/B][/COLOR]')
         quit()
     fanart=''
     dontLink=False
@@ -342,14 +342,17 @@ def getSearchData(url,icon, data=None):
     soup = getSoup(url,data)
     #print type(soup)
     if isinstance(soup,BeautifulSOAP):
-    #print 'xxxxxxxxxxsoup',soup   
+    #print 'xxxxxxxxxxsoup',soup
+    
         if len(soup('link')) > 0:
-            main_item = soup('item')           
+            main_item = soup('item')
+            
             for ite in main_item:
                 sear = ite('link')[0].string
                 soup = getSoup(sear,data)
                 items = soup('item')        
-                total = len(items)             
+                total = len(items)
+            
                 add_playlist = addon.getSetting('add_playlist')
                 ask_playlist_items =addon.getSetting('ask_playlist_items')
                 use_thumb = addon.getSetting('use_thumb')
@@ -357,27 +360,33 @@ def getSearchData(url,icon, data=None):
                 parentalblock= parentalblock=="true"
                 for item in items:
                     try:
+
                         isXMLSource=False
-                        isJsonrpc = False                      
+                        isJsonrpc = False
+                        
                         applyblock='false'
                         try:
                             applyblock = item('parentalblock')[0].string
                         except:
                             addon_log('parentalblock Error')
                             applyblock = ''
-                        if applyblock=='true' and parentalblock: continue                          
+                        if applyblock=='true' and parentalblock: continue
+                            
                         try:
                             name = item('title')[0].string
                             if name is None:
                                 name = 'unknown?'
                             try:
                                 name=processPyFunction(name)
-                            except: pass                           
+                            except: pass
+                            
                         except:
                             addon_log('Name Error')
                             name = ''
+
                         check_name = re.sub('\[.+?\]','',name)
                         if term in check_name.replace(' ','').lower():
+
                             try:
                                 if item('epg'):
                                     if item.epg_url:
@@ -396,33 +405,40 @@ def getSearchData(url,icon, data=None):
                             url = []
                             if len(item('link')) >0:
                                 #print 'item link', item('link')
+
                                 for i in item('link'):
                                     if not i.string == None:
                                         url.append(i.string)
+
                             elif len(item('utube')) >0:
                                 for i in item('utube'):
                                     if not i.string == None:
                                         if ' ' in i.string :
                                             utube = 'plugin://plugin.video.youtube/search/?q='+ urllib.quote_plus(i.string)
                                             isJsonrpc=utube
+                                        elif len(i.string) == 11:
+                                            utube = 'plugin://plugin.video.youtube/play/?video_id='+ i.string
                                         elif (i.string.startswith('PL') and not '&order=' in i.string) or i.string.startswith('UU'):
                                             utube = 'plugin://plugin.video.youtube/play/?&order=default&playlist_id=' + i.string
                                         elif i.string.startswith('PL') or i.string.startswith('UU'):
                                             utube = 'plugin://plugin.video.youtube/play/?playlist_id=' + i.string
-                                        elif i.string.startswith('UC') and len(i.string) > 7:
+                                        elif i.string.startswith('UC') and len(i.string) > 12:
                                             utube = 'plugin://plugin.video.youtube/channel/' + i.string + '/'
                                             isJsonrpc=utube
                                         elif not i.string.startswith('UC') and not (i.string.startswith('PL'))  :
                                             utube = 'plugin://plugin.video.youtube/user/' + i.string + '/'
                                             isJsonrpc=utube
                                     url.append(utube)
-                            elif len(item('urlsolve')) >0:                              
+                      
+                            elif len(item('urlsolve')) >0:
+                               
                                 for i in item('urlsolve'):
                                     if not i.string == None:
                                         resolver = i.string +'&mode=19'
                                         url.append(resolver)
                             if len(url) < 1:
                                 raise
+
                             try:
                                 isXMLSource = item('externallink')[0].string
                             except: pass
@@ -465,29 +481,34 @@ def getSearchData(url,icon, data=None):
                                     raise
                             except:
                                 desc = ''
+
                             try:
                                 genre = item('genre')[0].string
                                 if genre == None:
                                     raise
                             except:
                                 genre = ''
+
                             try:
                                 date = item('date')[0].string
                                 if date == None:
                                     raise
                             except:
                                 date = ''
+
                             regexs = None
                             if item('regex'):
                                 try:
                                     reg_item = item('regex')
                                     regexs = parse_regex(reg_item)
                                 except:
-                                    pass                            
+                                    pass
+                                
                             if len(url) > 1:
                                 alt = 0
                                 playlist = []
-                                ignorelistsetting=True if '$$LSPlayOnlyOne$$' in url[0] else False                             
+                                ignorelistsetting=True if '$$LSPlayOnlyOne$$' in url[0] else False
+                                
                                 for i in url:
                                     if  add_playlist == "false" and not ignorelistsetting:
                                         alt += 1
@@ -500,10 +521,12 @@ def getSearchData(url,icon, data=None):
                                         else:
                                             playlist.append(i)
                                     else:
-                                        playlist.append(i)                               
+                                        playlist.append(i)
+                                
                                 if len(playlist) > 1:       
                                     addLink('', name.encode('utf-8'),thumbnail,fanArt,desc,genre,date,True,playlist,regexs,total)
-                            else:                             
+                            else:
+                                
                                 if dontLink:
                                     return name,url[0],regexs
                                 if isXMLSource:
@@ -512,7 +535,7 @@ def getSearchData(url,icon, data=None):
                                         else:
                                             addDir(name.encode('utf-8'),ext_url[0].encode('utf-8'),1,thumbnail,fanArt,desc,genre,date,None,'source',None,None)
                                 elif isJsonrpc:
-                                    addDir(name.encode('utf-8'),ext_url[0],11,thumbnail,fanArt,desc,genre,date,None,'source')
+                                    addDir(name.encode('utf-8'),ext_url[0],53,thumbnail,fanArt,desc,genre,date,None,'source')
                                 else:                    
                                     addLink(url[0],name.encode('utf-8', 'ignore'),thumbnail,fanArt,desc,genre,date,True,None,regexs,total)
                     except: pass

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="plugin.video.alive.hd"
        name="[COLOR white][B]Alive[COLOR lime].[COLOR white]HD[/B][/COLOR]"
-       version="8.1b"
+       version="8.2"
        provider-name="frenchdj">
  <requires>
 	<import addon="xbmc.python" version="2.1.0"/>
