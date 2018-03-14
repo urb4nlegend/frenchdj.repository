@@ -16,7 +16,7 @@
 
 <addon id="plugin.video.alive.hd"
        name="[COLOR white][B]Alive[COLOR lime].[COLOR white]HD[/B][/COLOR]"
-       version="8.3"
+       version="8.3a"
        provider-name="frenchdj">
  <requires>
 	<import addon="xbmc.python" version="2.1.0"/>
@@ -30,7 +30,7 @@
   </extension>
   <extension point="xbmc.addon.metadata">
     <summary lang="en">[ 2018 Favorite Edition ]</summary>
-    <description>Concerts and Djs live performances in HD quality.
+    <description>Live Concerts and Music Videos in HD quality.
 Channels and Playlists organized by categories. Source: Youtube Website.
 [B][COLOR lime]Advised the latest version of youtube 6.*.*[/B][/COLOR]</description>
     <platform>all</platform>
