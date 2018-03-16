@@ -968,6 +968,34 @@ def addLink(url,name,iconimage,fanart,description,genre,date,showcontext,playlis
         #print 'added',name
         return ok
 
+def d2x(d, root="root",nested=0):
+
+    op = lambda tag: '<' + tag + '>'
+    cl = lambda tag: '</' + tag + '>\n'
+    ml = lambda v,xml: xml + op(key) + str(v) + cl(key)
+    xml = op(root) + '\n' if root else ""
+    for key,vl in d.iteritems():
+        vtype = type(vl)
+        if nested==0: key='regex' #enforcing all top level tags to be named as regex
+        if vtype is list: 
+            for v in vl:
+                v=escape(v)
+                xml = ml(v,xml)             
+        if vtype is dict: 
+            xml = ml('\n' + d2x(vl,None,nested+1),xml)         
+        if vtype is not list and vtype is not dict: 
+            if not vl is None: vl=escape(vl)
+            #print repr(vl)
+            if vl is None:
+                xml = ml(vl,xml)
+            else:
+                #xml = ml(escape(vl.encode("utf-8")),xml)
+                xml = ml(vl.encode("utf-8"),xml)
+    xml += cl(root) if root else ""
+
+    return xml
+xbmcplugin.setContent(int(sys.argv[1]), 'movies')
+
 params=get_params()
 Base = 'http://frenchdj.atspace.tv/Alive/Alive.HD.xml'
 url=None
