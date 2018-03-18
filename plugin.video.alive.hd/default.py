@@ -107,14 +107,6 @@ def getSources():
         try:
             if os.path.exists(favorites) == True:
                 addDir('[B][COLOR deepskyblue]| Favourites[/COLOR][/B]','[B][COLOR deepskyblue]| Favourites[/COLOR][/B]',4,'https://i.imgur.com/f8uL4ek.png' , os.path.join(home, 'fanart.gif'),FANART,'','','','')
-            if addon.getSetting("browse_xml_database") == "true":
-                addDir('XML Database','http://xbmcplus.xb.funpic.de/www-data/filesystem/',15,icon,FANART,'','','','')
-            if addon.getSetting("browse_community") == "true":
-                addDir('Community Files','community_files',16,icon,FANART,'','','','')
-            if os.path.exists(history) == True:
-                addDir('Search History','history',25,os.path.join(home, 'resources', 'favorite.png'),FANART,'','','','')                                                                                                                    
-            if addon.getSetting("searchotherplugins") == "true":
-                addDir('Search Other Plugins','Search Plugins',25,icon,FANART,'','','','')
             if os.path.exists(alive_source)==True:
                 sources = json.loads(open(alive_source,"r").read())
                 #print 'sources',sources
@@ -882,11 +874,6 @@ def addLink(url,name,iconimage,fanart,description,genre,date,showcontext,playlis
             if addon.getSetting('dlaudioonly') == 'true':
                 contextMenu.append(('','XBMC.RunPlugin(%s?url=%s&mode=24&name=%s)'
                                         %(sys.argv[0], urllib.quote_plus(url), urllib.quote_plus(name))))
-        elif url.startswith('magnet:?xt='):
-            if '&' in url and not '&amp;' in url :
-                url = url.replace('&','&amp;')
-            url = 'plugin://plugin.video.pulsar/play?uri=' + url
-            mode = '7'
         else:
             mode = '7'
         if 'plugin://plugin.video.youtube/play/?video_id=' in url:
